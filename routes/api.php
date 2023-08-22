@@ -24,6 +24,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resources([
         'roles' => RolesController::class,
+        'users' => AuthController::class,
         'permissions' => PermissionsController::class,
     ]);
 

@@ -21,13 +21,21 @@ class Controller extends BaseController
 // 502 - BAD GATEWAY - Server was not able to get the response from another upstream server
 
 
-public function sendResponse($result, $message,$code)
-{
-    $response = [
-        'success' => true,
-        'data'    => $result,
-        'message' => $message,
-    ];
+public function sendResponse($result, $message,$code){
+
+            if(!empty($result)){
+            $response = [
+            'success' => true,
+            'data'    => $result,
+            'message' => $message,
+            ];
+            }  else{
+            $response = [
+            'success' => true,
+            'message' => $message,
+            ];
+
+            }
     return response()->json($response, $code);
 }
 

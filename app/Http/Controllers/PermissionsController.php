@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class PermissionsController extends Controller
 {
@@ -12,7 +15,8 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-        //
+        $permissions=Permission::all();
+        return $this->sendResponse($permissions,'Permission Return Successfully.',Response::HTTP_OK);
     }
 
     /**
@@ -28,7 +32,24 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => [
+                'required',
+                'unique:permissions,name,','min:3','max:50'
+            ],
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), Response::HTTP_BAD_REQUEST);
+        }
+        $permission = new Permission();
+        $permission->name = $request->name;
+        $permission->slug = Str::slug($request->name,'_');
+
+        $permission->save();
+        return $this->sendResponse($permission, 'Permission Created Successfully.', Response::HTTP_CREATED);
+        
     }
 
     /**
@@ -37,6 +58,7 @@ class PermissionsController extends Controller
     public function show(Permission $permission)
     {
         //
+        return $this->sendResponse($permission, 'Permission Return Successfully.', Response::HTTP_OK);
     }
 
     /**
@@ -45,6 +67,7 @@ class PermissionsController extends Controller
     public function edit(Permission $permission)
     {
         //
+        return $this->sendResponse($permission, 'Permission Return Successfully.', Response::HTTP_OK);
     }
 
     /**
@@ -52,7 +75,23 @@ class PermissionsController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => [
+                'required',
+                'unique:permissions,name,' . $permission->id,'min:3','max:50'
+            ],
+
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $permissions->name = $request->name;
+        $permissions->slug = Str::slug($request->name,'_');
+        $permissions->update();
+        return $this->sendResponse($permissions, 'Permission Updated Successfully.', Response::HTTP_OK);
+
     }
 
     /**
@@ -60,6 +99,7 @@ class PermissionsController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        //
+        $permission->delete();
+        return $this->sendResponse([], 'Permission Deleted Successfully.', Response::HTTP_OK);
     }
 }
