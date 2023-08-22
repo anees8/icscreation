@@ -16,7 +16,7 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles=Role::orderBy('id','DESC')->get();
+        $roles=Role::all();
         return $this->sendResponse($roles,'Role Return Successfully.',Response::HTTP_OK);
     }
 
@@ -57,6 +57,9 @@ class RolesController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+
+        print_r($request->all());
+        exit;
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
