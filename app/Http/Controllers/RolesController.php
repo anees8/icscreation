@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Models\{Role,Permission};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -36,7 +36,7 @@ class RolesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
-                'unique:roles,name','min:3','max:50'
+                'unique:roles,name', 'min:3', 'max:50',
             ],
 
         ]);
@@ -46,10 +46,10 @@ class RolesController extends Controller
         }
         $role = new Role();
         $role->name = $request->name;
-        $role->slug = Str::slug($request->name,'_');
+        $role->slug = Str::slug($request->name, '_');
 
         $role->save();
-      
+
         return $this->sendResponse($role, 'Role Created Successfully.', Response::HTTP_CREATED);
 
     }
@@ -81,7 +81,7 @@ class RolesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
-                'unique:roles,name,' . $role->id,'min:3','max:50'
+                'unique:roles,name,' . $role->id, 'min:3', 'max:50',
             ],
 
         ]);
@@ -91,7 +91,7 @@ class RolesController extends Controller
         }
 
         $role->name = $request->name;
-        $role->slug = Str::slug($request->name,'_');
+        $role->slug = Str::slug($request->name, '_');
         $role->update();
         return $this->sendResponse($role, 'Role Updated Successfully.', Response::HTTP_OK);
     }
@@ -107,4 +107,43 @@ class RolesController extends Controller
         return $this->sendResponse([], 'Role Deleted Successfully.', Response::HTTP_OK);
     }
 
+    
+public function assignPermissionToRole(Request $request, Role $role){
+
+        $validator = Validator::make($request->all(), [
+            'permission_id' => 'required|array',
+            'permission_id.*' => 'exists:permissions,id',
+    
+        ]);
+
+        if ($validator->fails()) {
+        return $this->sendError('Validation Error.', $validator->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+        $role->permissions()->sync($request->permission_id);
+        $role->load('permissions');
+
+        return $this->sendResponse($role, 'Permission assigned to role.', Response::HTTP_OK);
+        }
+
+public function revokePermissionFromRole(Request $request, Role $role){
+
+        $validator = Validator::make($request->all(), [
+            'permission_id' => 'required|array',
+            'permission_id.*' => 'exists:permissions,id',
+    
+        ]);
+        if ($validator->fails()) {
+        return $this->sendError('Validation Error.', $validator->errors(), Response::HTTP_BAD_REQUEST);
+        }
+
+
+        $role->permissions()->detach($request->permission_id);
+        $role->load('permissions');
+
+        return $this->sendResponse($role, 'Permission revoked from role.', Response::HTTP_OK);
+        }
+
+    
+  
 }

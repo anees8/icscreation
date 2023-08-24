@@ -102,4 +102,6 @@ class PermissionsController extends Controller
         $permission->delete();
         return $this->sendResponse([], 'Permission Deleted Successfully.', Response::HTTP_OK);
     }
+
+    
 }

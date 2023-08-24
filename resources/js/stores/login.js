@@ -32,6 +32,7 @@ export const useLoginStore = defineStore("loginStore", {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+
         this.loading = false;
       }
     },
