@@ -8,9 +8,9 @@ import VueAxios from "vue-axios";
 import  { BootstrapVueNext }  from "bootstrap-vue-next";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
-  faArrowRight,faArrowsRotate,faGauge, faKey, faRightFromBracket, faUserGear,
+  faArrowRight,faArrowsRotate,faGauge, faKey, faRightFromBracket, faUserGear,faUser, faPlus, faPen, faTrash
 } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
+import {  } from "@fortawesome/free-regular-svg-icons";
 
 import {
   FontAwesomeIcon,
@@ -20,7 +20,7 @@ import {
 library.add(
     faArrowRight,
     faUser,
-    faArrowsRotate, faGauge, faRightFromBracket,faUserGear,faKey
+    faArrowsRotate, faGauge, faRightFromBracket,faUserGear,faKey,faPlus,faPen,faTrash
   );
 
 import Swal from 'sweetalert2';

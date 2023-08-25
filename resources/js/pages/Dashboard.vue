@@ -2,7 +2,7 @@
 import { defineAsyncComponent } from 'vue'
 
 const HomeCards = defineAsyncComponent(() =>
-  import('../components/Home/HomeCards.vue')
+  import('./Home/HomeCards.vue')
 )
 </script>
 <template>

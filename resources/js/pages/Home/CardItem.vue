@@ -1,3 +1,3 @@
 <template>
-    Card Item
+    Card
 </template>

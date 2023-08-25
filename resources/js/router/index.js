@@ -21,6 +21,16 @@ const routes = [
         
     },
     {
+        path: "/users",
+        name: "Users",
+        component: ()=>import('../pages/Users/index.vue'),
+        meta: {
+            requireAuth: true,    
+          
+        },
+        
+    },
+    {
         path: "/roles",
         name: "Roles",
         component: ()=>import('../pages/Roles.vue'),

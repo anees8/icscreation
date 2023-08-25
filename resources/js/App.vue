@@ -15,8 +15,8 @@ setTimeout(() => {
 </script>
 <template>
         <div v-if="isLoading">
-        <BContainer fluid>
-        <BRow class="align-items-center justify-content-center vh-100 text-center">
+        <BContainer fluid >
+        <BRow class="align-items-center justify-content-center vh-100 text-center ">
         <BCol>
         <BSpinner></BSpinner>
         </BCol>
@@ -36,10 +36,14 @@ setTimeout(() => {
 <style scoped>
 .sidebar {
   display: flex;
+
 }
 
 .sidebar .content {
   flex: 1 1 0;
   background: #EEEDE7;
+
+
 }
+
 </style>
