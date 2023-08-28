@@ -41,10 +41,13 @@
                 }}</BFormInvalidFeedback>
                 </BFormGroup>
 
-              
-
-                
-
+                <BFormGroup
+                id="input-group-1"
+                label="Select Your Permissions:"
+                label-for="input-1"
+                >
+                <BFormSelect v-model="selectedPermissions" multiple :options="permissionOptions"></BFormSelect>
+              </BFormGroup>
 
      <template #footer>
                  <div>
@@ -141,6 +144,8 @@
    rows,
    errors,
    isBusy,
+   permissionOptions,
+   selectedPermissions
  } = storeToRefs(useRolesStore());
  
  const { getRoles, setPerPage ,uploadData,editRole,deleteRole , hideModel} = useRolesStore();

@@ -37,6 +37,8 @@ export const useRolesStore = defineStore("rolesStore", {
     ],
     roles: [],
     role: {},
+    permissions: [],
+    selectedPermissions:[],
     perPage: 10,
     currentPage: 1,
     isBusy: false,
@@ -51,6 +53,15 @@ export const useRolesStore = defineStore("rolesStore", {
 
     errors: {}
   }),
+  getters: {
+    permissionOptions() {
+
+      return this.permissions.map((permission) => ({
+        text: permission.name, // Display the role's name as text
+        value: permission.id, // Use the role's id as the value
+      }));
+    },
+  },
 
   actions: {
     async getRoles() {
@@ -77,9 +88,24 @@ export const useRolesStore = defineStore("rolesStore", {
       }
     },
 
-    editRole(id) {
-      this.role = this.roles.find((role) => role.id == id);
-      this.modal = !this.modal;
+    async editRole(id) {
+
+      try {
+        let url = "roles/";
+       
+        const response = await axios.get(url + id);
+        
+        this.role = response.data.data.role;
+        this.modal = !this.modal;
+        this.permissions = response.data.data.permissions;
+        
+        this.selectedPermissions = this.role.permissions.map(permission => permission.id);;
+      } catch (error) {
+        if (error.response) {
+          this.errors = error.response.data.errors;
+        }
+       
+      }
     },
 
     deleteRole(id) {
@@ -119,7 +145,7 @@ export const useRolesStore = defineStore("rolesStore", {
 
     resetForm() {
       this.errors = {};
-
+      this.selectedPermissions=[];
       this.role = {};
       this.isBusy = false;
     },
@@ -139,6 +165,13 @@ export const useRolesStore = defineStore("rolesStore", {
       if (this.role.name) {
         formData.append("name", this.role.name);
       }
+
+     
+      if (this.selectedPermissions) {
+        formData.append("permission_id", this.selectedPermissions);
+      }
+
+      
       
       if (!this.role.id) {
         try {

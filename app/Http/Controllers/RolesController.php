@@ -50,6 +50,7 @@ class RolesController extends Controller
 
         $role->save();
 
+
         return $this->sendResponse($role, 'Role Created Successfully.', Response::HTTP_CREATED);
 
     }
@@ -60,8 +61,9 @@ class RolesController extends Controller
 
     public function show(Role $role)
     {
-        
-        return $this->sendResponse($role, 'Role Return Successfully.', Response::HTTP_OK);
+        $data['role']= $role->load('permissions');
+        $data['permissions']= Permission::get();
+        return $this->sendResponse($data, 'Role Return Successfully.', Response::HTTP_OK);
     }
 
 /**
@@ -93,7 +95,10 @@ class RolesController extends Controller
 
         $role->name = $request->name;
         $role->slug = Str::slug($request->name, '_');
+
         $role->update();
+      
+
         return $this->sendResponse($role, 'Role Updated Successfully.', Response::HTTP_OK);
     }
 
