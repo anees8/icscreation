@@ -33,7 +33,7 @@ const routes = [
     {
         path: "/roles",
         name: "Roles",
-        component: ()=>import('../pages/Roles.vue'),
+        component: ()=>import('../pages/Roles/index.vue'),
         meta: {
             requireAuth: true,    
           
@@ -43,7 +43,7 @@ const routes = [
     {
         path: "/permissions",
         name: "Permissions",
-        component: ()=>import('../pages/Permissions.vue'),
+        component: ()=>import('../pages/Permissions/index.vue'),
         meta: {
             requireAuth: true,    
           

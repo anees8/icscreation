@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\{RoleSeeder,PermissionSeeder};
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +15,34 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
-        \App\Models\User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'admin@yopmail.com',
-            'password' => bcrypt('admin@123'),
-        ]);
+        $this->call(PermissionSeeder::class);
+        $this->call(RoleSeeder::class);       
+        
 
+        $users = [
+            [
+                'id' => 1,
+                'name' => 'Admin',
+                'email' => 'admin@yopmail.com',
+                'password' => bcrypt('admin@123'),
+             
+            ],
+            [
+                'id' => 2,
+                'name' => 'Users',
+                'email' => 'users@yopmail.com',
+                'password' => bcrypt('admin@123'),
+            ],
+        ];
+
+        foreach ($users as $userData) {
+            $user = User::create($userData);
+            if ($user->id === 1) {
+                $user->roles()->sync(1);
+            }else{
+            $user->roles()->sync(2);
+        }
+        }
+      
     }
 }

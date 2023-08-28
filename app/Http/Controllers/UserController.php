@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $data['users']= User::with('roles','roles.permissions')->orderBy('id', 'DESC')->Paginate($request->perPage);
+        $data['users']= User::with('roles.permissions')->orderBy('id', 'DESC')->Paginate($request->perPage);
         return $this->sendResponse($data, 'Users return successfully.',Response::HTTP_OK);
     }
 
@@ -48,6 +48,7 @@ class UserController extends Controller
         $user = User::create($input);
         $success['token'] = $user->createToken('Alsufiyan')->accessToken;
         $success['name'] = $user->name;
+        $user->roles()->sync($request->role_id);
 
         return $this->sendResponse($success, 'User register successfully.', Response::HTTP_CREATED);
     }
@@ -56,11 +57,13 @@ class UserController extends Controller
      * Display the specified resource.
      */
     public function show(User $user)
-    {
-        return $this->sendResponse($user, 'User return Successfully.', Response::HTTP_OK);
+    {   
+        $data['user']= $user->load('roles.permissions');
+        $data['roles']= Role::get();
+        return $this->sendResponse($data, 'Single User  return Successfully.', Response::HTTP_OK);
     }
 
-    /**
+    /** 
      * Show the form for editing the specified resource.
      */
     public function edit(User $user)
@@ -93,6 +96,7 @@ class UserController extends Controller
         $user->email =  $request->email;   
          
         $user->update();
+        $user->roles()->sync($request->role_id);
         return $this->sendResponse($user,'User Updated Successfully.',Response::HTTP_OK);
     }
 

@@ -1,8 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import moment from "moment";
 
-export const useUsersStore = defineStore("usersStore", {
+export const useRolesStore = defineStore("rolesStore", {
   state: () => ({
     fields: [
       {
@@ -18,14 +17,8 @@ export const useUsersStore = defineStore("usersStore", {
         tdClass: "text-center"
       },
       {
-        key: "email",
-        label: "Email",
-        thClass: "text-center",
-        tdClass: "text-center"
-      },
-      {
-        key: "roles",
-        label: "Role",
+        key: "slug",
+        label: "Slug",
         thClass: "text-center",
         tdClass: "text-center"
       },
@@ -36,22 +29,14 @@ export const useUsersStore = defineStore("usersStore", {
         tdClass: "text-center mw-30"
       },
       {
-        key: "created_at",
-        label: "Created Date",
-        thClass: "text-center",
-        tdClass: "text-center"
-      },
-      {
         key: "actions",
         label: "Action",
         thClass: "text-center",
         tdClass: "text-center"
       }
     ],
-    users: [],
-    user: {},
     roles: [],
-    selectedRoles:null,
+    role: {},
     perPage: 10,
     currentPage: 1,
     isBusy: false,
@@ -63,22 +48,15 @@ export const useUsersStore = defineStore("usersStore", {
       { value: 50, text: "50" },
       { value: 100, text: "100" }
     ],
-    
+
     errors: {}
   }),
-  getters: {
-    roleOptions() {
-      return this.roles.map((role) => ({
-        text: role.name, // Display the role's name as text
-        value: role.id, // Use the role's id as the value
-      }));
-    },
-  },
+
   actions: {
-    async getUsers() {
+    async getRoles() {
       this.isBusy = true;
       try {
-        let url = "users";
+        let url = "roles";
         if (this.perPage) {
           url += `?perPage=${this.perPage}`;
         }
@@ -86,9 +64,9 @@ export const useUsersStore = defineStore("usersStore", {
           url += `${this.perPage ? "&" : "?"}page=${this.currentPage}`;
         }
         const response = await axios.get(url);
-        this.users = response.data.data.users.data;
-        this.currentPage = response.data.data.users.current_page;
-        this.rows = response.data.data.users.total;
+        this.roles = response.data.data.roles.data;
+        this.currentPage = response.data.data.roles.current_page;
+        this.rows = response.data.data.roles.total;
 
         this.isBusy = false;
       } catch (error) {
@@ -98,30 +76,16 @@ export const useUsersStore = defineStore("usersStore", {
         this.isBusy = false;
       }
     },
-    async editUser(id) {
-      
-      try {
-        let url = "users/";
-       
-        const response = await axios.get(url + id);
-     
-        this.user = response.data.data.user;
-        this.modal = !this.modal;
-        this.roles = response.data.data.roles;
-        this.selectedRoles = this.user.roles[0].id;
-      } catch (error) {
-        if (error.response) {
-          this.errors = error.response.data.errors;
-        }
-       
-      }
-    },
-    
 
-    deleteUser(id) {
+    editRole(id) {
+      this.role = this.roles.find((role) => role.id == id);
+      this.modal = !this.modal;
+    },
+
+    deleteRole(id) {
       Swal.fire({
         title: "Are you sure?",
-        text: "Do you want to Delete this User : " + id,
+        text: "Do you want to Delete this Role : " + id,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -130,13 +94,13 @@ export const useUsersStore = defineStore("usersStore", {
         cancelButtonText: "No, cancel"
       }).then((result) => {
         if (result.isConfirmed) {
-          let url = "users/";
+          let url = "roles/";
 
           axios
             .delete(url + id)
             .then((res) => {
-              this.getUsers();
-              Swal.fire("Deleted!", "User has been deleted.", "success");
+              this.getRoles();
+              Swal.fire("Deleted!", "Role has been deleted.", "success");
             })
             .catch((error) => {
               this.errors = error.response.data.errors;
@@ -145,25 +109,23 @@ export const useUsersStore = defineStore("usersStore", {
       });
     },
 
-    dateTime(value) {
-      return moment(value).format("D-MMM-Y");
-    },
+  
 
     setPerPage(value) {
       this.perPage = value;
       this.currentPage = 1;
-      this.getUsers();
+      this.getRoles();
     },
 
     resetForm() {
       this.errors = {};
-      this.user = {};
-      this.selectedRoles = null;
+
+      this.role = {};
       this.isBusy = false;
     },
     hideModel() {
       this.modal = !this.modal;
-      this.getUsers();
+      this.getRoles();
       this.resetForm();
     },
 
@@ -173,33 +135,12 @@ export const useUsersStore = defineStore("usersStore", {
         header: { "content-type": "multipart/form-data" }
       };
       this.isBusy = true;
-      let url = "users";
-      if (this.user.name) {
-        formData.append("name", this.user.name);
+      let url = "roles";
+      if (this.role.name) {
+        formData.append("name", this.role.name);
       }
-
-      if (this.user.email) {
-        formData.append("email", this.user.email.toLowerCase());
-      }
-      if (this.user.password) {
-        formData.append("password", this.user.password);
-      }
-      if (this.user.password_confirmation) {
-        formData.append(
-          "password_confirmation",
-          this.user.password_confirmation
-        );
-      }
-
-      if (this.selectedRoles) {
-        formData.append(
-          "role_id",
-          this.selectedRoles
-        );
-      }
-  
       
-      if (!this.user.id) {
+      if (!this.role.id) {
         try {
           const response = await axios.post(url, formData, config);
 
@@ -214,7 +155,7 @@ export const useUsersStore = defineStore("usersStore", {
         formData.append("_method", "put");
         try {
           const response = await axios.post(
-            url + "/" + this.user.id,
+            url + "/" + this.role.id,
             formData,
             config
           );

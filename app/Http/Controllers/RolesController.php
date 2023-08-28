@@ -13,10 +13,10 @@ class RolesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::all();
-        return $this->sendResponse($roles, 'Role Return Successfully.', Response::HTTP_OK);
+        $data['roles']= Role::with('permissions')->Paginate($request->perPage);
+        return $this->sendResponse($data, 'Role Return Successfully.', Response::HTTP_OK);
     }
 
     /**
@@ -60,6 +60,7 @@ class RolesController extends Controller
 
     public function show(Role $role)
     {
+        
         return $this->sendResponse($role, 'Role Return Successfully.', Response::HTTP_OK);
     }
 

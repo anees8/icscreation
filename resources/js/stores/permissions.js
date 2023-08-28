@@ -1,15 +1,14 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import moment from "moment";
 
-export const useUsersStore = defineStore("usersStore", {
+export const usePermissionsStore = defineStore("permissionsStore", {
   state: () => ({
     fields: [
       {
         key: "id",
         label: "ID",
         thClass: "text-center",
-        tdClass: "text-center"
+        tdClass: "text-center "
       },
       {
         key: "name",
@@ -18,26 +17,8 @@ export const useUsersStore = defineStore("usersStore", {
         tdClass: "text-center"
       },
       {
-        key: "email",
-        label: "Email",
-        thClass: "text-center",
-        tdClass: "text-center"
-      },
-      {
-        key: "roles",
-        label: "Role",
-        thClass: "text-center",
-        tdClass: "text-center"
-      },
-      {
-        key: "permissions",
-        label: "Permissions",
-        thClass: "text-center",
-        tdClass: "text-center mw-30"
-      },
-      {
-        key: "created_at",
-        label: "Created Date",
+        key: "slug",
+        label: "Slug",
         thClass: "text-center",
         tdClass: "text-center"
       },
@@ -48,10 +29,8 @@ export const useUsersStore = defineStore("usersStore", {
         tdClass: "text-center"
       }
     ],
-    users: [],
-    user: {},
-    roles: [],
-    selectedRoles:null,
+    permissions: [],
+    permission: {},
     perPage: 10,
     currentPage: 1,
     isBusy: false,
@@ -63,22 +42,15 @@ export const useUsersStore = defineStore("usersStore", {
       { value: 50, text: "50" },
       { value: 100, text: "100" }
     ],
-    
+
     errors: {}
   }),
-  getters: {
-    roleOptions() {
-      return this.roles.map((role) => ({
-        text: role.name, // Display the role's name as text
-        value: role.id, // Use the role's id as the value
-      }));
-    },
-  },
+
   actions: {
-    async getUsers() {
+    async getPermissions() {
       this.isBusy = true;
       try {
-        let url = "users";
+        let url = "permissions";
         if (this.perPage) {
           url += `?perPage=${this.perPage}`;
         }
@@ -86,9 +58,9 @@ export const useUsersStore = defineStore("usersStore", {
           url += `${this.perPage ? "&" : "?"}page=${this.currentPage}`;
         }
         const response = await axios.get(url);
-        this.users = response.data.data.users.data;
-        this.currentPage = response.data.data.users.current_page;
-        this.rows = response.data.data.users.total;
+        this.permissions = response.data.data.permissions.data;
+        this.currentPage = response.data.data.permissions.current_page;
+        this.rows = response.data.data.permissions.total;
 
         this.isBusy = false;
       } catch (error) {
@@ -98,30 +70,16 @@ export const useUsersStore = defineStore("usersStore", {
         this.isBusy = false;
       }
     },
-    async editUser(id) {
-      
-      try {
-        let url = "users/";
-       
-        const response = await axios.get(url + id);
-     
-        this.user = response.data.data.user;
-        this.modal = !this.modal;
-        this.roles = response.data.data.roles;
-        this.selectedRoles = this.user.roles[0].id;
-      } catch (error) {
-        if (error.response) {
-          this.errors = error.response.data.errors;
-        }
-       
-      }
-    },
-    
 
-    deleteUser(id) {
+    editPermission(id) {
+      this.permission = this.permissions.find((permission) => permission.id == id);
+      this.modal = !this.modal;
+    },
+
+    deletePermission(id) {
       Swal.fire({
         title: "Are you sure?",
-        text: "Do you want to Delete this User : " + id,
+        text: "Do you want to Delete this Permission : " + id,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#d33",
@@ -130,13 +88,13 @@ export const useUsersStore = defineStore("usersStore", {
         cancelButtonText: "No, cancel"
       }).then((result) => {
         if (result.isConfirmed) {
-          let url = "users/";
+          let url = "permissions/";
 
           axios
             .delete(url + id)
             .then((res) => {
-              this.getUsers();
-              Swal.fire("Deleted!", "User has been deleted.", "success");
+              this.getPermissions();
+              Swal.fire("Deleted!", "Permission has been deleted.", "success");
             })
             .catch((error) => {
               this.errors = error.response.data.errors;
@@ -145,25 +103,23 @@ export const useUsersStore = defineStore("usersStore", {
       });
     },
 
-    dateTime(value) {
-      return moment(value).format("D-MMM-Y");
-    },
+  
 
     setPerPage(value) {
       this.perPage = value;
       this.currentPage = 1;
-      this.getUsers();
+      this.getPermissions();
     },
 
     resetForm() {
       this.errors = {};
-      this.user = {};
-      this.selectedRoles = null;
+
+      this.permission = {};
       this.isBusy = false;
     },
     hideModel() {
       this.modal = !this.modal;
-      this.getUsers();
+      this.getPermissions();
       this.resetForm();
     },
 
@@ -173,33 +129,12 @@ export const useUsersStore = defineStore("usersStore", {
         header: { "content-type": "multipart/form-data" }
       };
       this.isBusy = true;
-      let url = "users";
-      if (this.user.name) {
-        formData.append("name", this.user.name);
+      let url = "permissions";
+      if (this.permission.name) {
+        formData.append("name", this.permission.name);
       }
-
-      if (this.user.email) {
-        formData.append("email", this.user.email.toLowerCase());
-      }
-      if (this.user.password) {
-        formData.append("password", this.user.password);
-      }
-      if (this.user.password_confirmation) {
-        formData.append(
-          "password_confirmation",
-          this.user.password_confirmation
-        );
-      }
-
-      if (this.selectedRoles) {
-        formData.append(
-          "role_id",
-          this.selectedRoles
-        );
-      }
-  
       
-      if (!this.user.id) {
+      if (!this.permission.id) {
         try {
           const response = await axios.post(url, formData, config);
 
@@ -214,7 +149,7 @@ export const useUsersStore = defineStore("usersStore", {
         formData.append("_method", "put");
         try {
           const response = await axios.post(
-            url + "/" + this.user.id,
+            url + "/" + this.permission.id,
             formData,
             config
           );

@@ -10,10 +10,10 @@
              size="sm"
                @click="modal = !modal"
                class="float-end"
-               pill
+
                variant="outline-dark"
              >
-               <FontAwesomeIcon icon="plus" class="me-2" />Add User</b-button
+               <FontAwesomeIcon icon="plus" class="me-1"/>USER</b-button
              >
              <div>
                <b-modal
@@ -95,7 +95,19 @@
                        errors.password_confirmation[0]
                      }}</BFormInvalidFeedback>
                    </BFormGroup>
-   
+
+           
+                      <BFormGroup class="mt-2" label="Select User Role" v-slot="{ ariaDescribedby }">
+                      <BFormRadioGroup
+                      v-model="selectedRoles"
+                      :options="roleOptions"
+                      :aria-describedby="ariaDescribedby"
+                      name="plain-inline"
+
+                      ></BFormRadioGroup>
+                      </BFormGroup>
+
+         
  
  
        <template #footer>
@@ -127,12 +139,23 @@
              responsive
              show-empty
            >
-             
-             <template #cell(created_at)="data">{{ dateTime(data.value) }}</template>
+           <template #cell(roles)="data">
+            <span class="badge bg-info text-dark" v-for="role in data.item.roles" :key="role.id">{{ role.name }}</span>
+          </template>
+          <template #cell(permissions)="data">
+          
+<span  v-for="role in data.item.roles" :key="role.id">
+
+  <span class="badge bg-info text-dark me-1" v-for="permission in role.permissions" :key="permission.id">{{ permission.name }}</span>
+</span>
+       
+          </template> 
+           
+             <template #cell(created_at)="data">{{ dateTime(data.item.created_at) }}</template>
              <template #cell(actions)="data"> 
                <b-button
                size="sm"
-               class="rounded-circle p-2 me-2"
+               class="circle me-2"
                @click="editUser(data.item.id)"
                variant="outline-success"
              >
@@ -141,7 +164,7 @@
  
              <b-button
              size="sm"
-               class="rounded-circle p-2 me-2"
+               class="circle me-2"
                @click="deleteUser(data.item.id)"
                variant="outline-danger"
              >
@@ -182,6 +205,7 @@
    const {
      users,
      user,
+     roles,
      fields,
      options,
      perPage,
@@ -189,11 +213,10 @@
      modal, 
      rows,
      errors,
-     isBusy,
+     isBusy,roleOptions,selectedRoles
    } = storeToRefs(useUsersStore());
    
-   const { getUsers, setPerPage, dateTime ,uploadData,editUser,deleteUser ,  resetForm,
-   hideModel} = useUsersStore();
+   const { getUsers, setPerPage, dateTime ,uploadData,editUser,deleteUser ,hideModel} = useUsersStore();
    
    getUsers();
    </script>

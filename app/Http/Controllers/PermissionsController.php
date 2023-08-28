@@ -13,10 +13,10 @@ class PermissionsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $permissions=Permission::all();
-        return $this->sendResponse($permissions,'Permission Return Successfully.',Response::HTTP_OK);
+        $data['permissions']= Permission::Paginate($request->perPage);
+        return $this->sendResponse($data,'Permission Return Successfully.',Response::HTTP_OK);
     }
 
     /**
@@ -78,7 +78,7 @@ class PermissionsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
-                'unique:permissions,name,' . $permission->id,'min:3','max:50'
+                'unique:roles,name,' . $permission->id, 'min:3', 'max:50',
             ],
 
         ]);
@@ -87,10 +87,11 @@ class PermissionsController extends Controller
             return $this->sendError('Validation Error.', $validator->errors(), Response::HTTP_BAD_REQUEST);
         }
 
-        $permissions->name = $request->name;
-        $permissions->slug = Str::slug($request->name,'_');
-        $permissions->update();
-        return $this->sendResponse($permissions, 'Permission Updated Successfully.', Response::HTTP_OK);
+
+        $permission->name = $request->name;
+        $permission->slug = Str::slug($request->name,'_');
+        $permission->update();
+        return $this->sendResponse($permission, 'Permission Updated Successfully.', Response::HTTP_OK);
 
     }
 
