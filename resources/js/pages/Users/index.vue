@@ -1,3 +1,25 @@
+<script setup>
+import { storeToRefs } from "pinia";
+
+import { useUsersStore } from "@/stores/users.js";
+const {
+  users,
+  user,
+  roles,
+  fields,
+  options,
+  perPage,
+  currentPage,
+  modal, 
+  rows,
+  errors,
+  isBusy,roleOptions,selectedRoles
+} = storeToRefs(useUsersStore());
+
+const { getUsers, setPerPage, dateTime ,uploadData,editUser,deleteUser ,hideModel} = useUsersStore();
+
+getUsers();
+</script>
 <template>
     <b-container fluid>
      <b-row>
@@ -198,26 +220,5 @@
      </b-row>
    </b-container>
    </template>
-   <script setup>
-   import { storeToRefs } from "pinia";
-   
-   import { useUsersStore } from "@/stores/users.js";
-   const {
-     users,
-     user,
-     roles,
-     fields,
-     options,
-     perPage,
-     currentPage,
-     modal, 
-     rows,
-     errors,
-     isBusy,roleOptions,selectedRoles
-   } = storeToRefs(useUsersStore());
-   
-   const { getUsers, setPerPage, dateTime ,uploadData,editUser,deleteUser ,hideModel} = useUsersStore();
-   
-   getUsers();
-   </script>
+
    

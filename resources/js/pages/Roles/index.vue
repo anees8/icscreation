@@ -1,3 +1,27 @@
+<script setup>
+import { storeToRefs } from "pinia";
+
+import { useRolesStore } from "@/stores/roles.js";
+const {
+  roles,
+  role,
+  fields,
+  options,
+  perPage,
+  currentPage,
+  modal, 
+  rows,
+  errors,
+  isBusy,
+  permissionOptions,
+  selectedPermissions
+} = storeToRefs(useRolesStore());
+
+const { getRoles, setPerPage ,uploadData,editRole,deleteRole , hideModel} = useRolesStore();
+
+getRoles();
+</script>
+  
 <template>
   <b-container fluid>
    <b-row>
@@ -48,6 +72,7 @@
                 >
                 <BFormSelect v-model="selectedPermissions" multiple :options="permissionOptions"></BFormSelect>
               </BFormGroup>
+              
 
      <template #footer>
                  <div>
@@ -129,27 +154,3 @@
    </b-row>
  </b-container>
  </template>
- <script setup>
- import { storeToRefs } from "pinia";
- 
- import { useRolesStore } from "@/stores/roles.js";
- const {
-   roles,
-   role,
-   fields,
-   options,
-   perPage,
-   currentPage,
-   modal, 
-   rows,
-   errors,
-   isBusy,
-   permissionOptions,
-   selectedPermissions
- } = storeToRefs(useRolesStore());
- 
- const { getRoles, setPerPage ,uploadData,editRole,deleteRole , hideModel} = useRolesStore();
- 
- getRoles();
- </script>
- 

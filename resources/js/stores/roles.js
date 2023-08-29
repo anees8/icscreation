@@ -133,10 +133,7 @@ export const useRolesStore = defineStore("rolesStore", {
             });
         }
       });
-    },
-
-  
-
+    },    
     setPerPage(value) {
       this.perPage = value;
       this.currentPage = 1;
@@ -166,10 +163,12 @@ export const useRolesStore = defineStore("rolesStore", {
         formData.append("name", this.role.name);
       }
 
-     
-      if (this.selectedPermissions) {
-        formData.append("permission_id", this.selectedPermissions);
+      for (let i = 0; i < this.selectedPermissions.length; i++) {
+        formData.append(`permission_id[${i}]`, this.selectedPermissions[i]);
       }
+     
+
+      
 
       
       

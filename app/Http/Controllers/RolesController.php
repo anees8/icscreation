@@ -38,7 +38,12 @@ class RolesController extends Controller
                 'required',
                 'unique:roles,name', 'min:3', 'max:50',
             ],
-
+            'permission_id' => [
+                'array',
+            ],
+            'permission_id.*' => [
+                'exists:permissions,id',
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -86,6 +91,12 @@ class RolesController extends Controller
                 'required',
                 'unique:roles,name,' . $role->id, 'min:3', 'max:50',
             ],
+            'permission_id' => [
+                'array',
+            ],
+            'permission_id.*' => [
+                'exists:permissions,id',
+            ],
 
         ]);
 
@@ -97,7 +108,7 @@ class RolesController extends Controller
         $role->slug = Str::slug($request->name, '_');
 
         $role->update();
-      
+        $role->permissions()->sync($request->permission_id);
 
         return $this->sendResponse($role, 'Role Updated Successfully.', Response::HTTP_OK);
     }
