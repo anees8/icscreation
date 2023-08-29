@@ -15,6 +15,7 @@ class PermissionsController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorizeForUser($request->user('api'), 'viewAny', Permission::class);
         $data['permissions']= Permission::Paginate($request->perPage);
         return $this->sendResponse($data,'Permission Return Successfully.',Response::HTTP_OK);
     }

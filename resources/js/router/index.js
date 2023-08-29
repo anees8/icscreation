@@ -84,7 +84,8 @@ const router = createRouter({
 
 
   router.beforeEach((to, from, next) => {
-    const { getAccessToken } = useLoginStore();
+    const { getAccessToken,getPermissions } = useLoginStore();
+    getPermissions();
     if (to.meta.requireAuth && getAccessToken === null) {
         next({ name: "Login" });
     }

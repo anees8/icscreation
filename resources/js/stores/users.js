@@ -102,12 +102,9 @@ export const useUsersStore = defineStore("usersStore", {
       
       try {
         let url = "users/";
-       
         const response = await axios.get(url + id);
-     
         this.user = response.data.data.user;
         this.modal = !this.modal;
-        this.roles = response.data.data.roles;
         this.selectedRoles = this.user.roles[0].id;
       } catch (error) {
         if (error.response) {
@@ -117,6 +114,21 @@ export const useUsersStore = defineStore("usersStore", {
       }
     },
     
+    async getRoles() {
+      
+      try {
+        let url = "roles";
+       
+        const response = await axios.get(url);
+        this.roles = response.data.data.roles.data;
+      
+      } catch (error) {
+        if (error.response) {
+          this.errors = error.response.data.errors;
+        }
+       
+      }
+    },
 
     deleteUser(id) {
       Swal.fire({

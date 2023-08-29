@@ -23,7 +23,7 @@ Route::middleware('auth:api')->group(function () {
 
 
 
-    
+         Route::get('users/permissions', [UserController::class, 'getUserPermission']);
         // User Roles
         Route::post('users/{user}/roles/assign', [UserController::class, 'assignRoleToUser']);
         Route::post('users/{user}/roles/revoke', [UserController::class, 'revokeRoleFromUser']);

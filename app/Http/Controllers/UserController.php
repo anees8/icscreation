@@ -14,7 +14,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
+        $this->authorizeForUser($request->user('api'), 'view', User::class);
+        
         $data['users']= User::with('roles.permissions')->orderBy('id', 'DESC')->Paginate($request->perPage);
         return $this->sendResponse($data, 'Users return successfully.',Response::HTTP_OK);
     }
@@ -32,6 +33,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorizeForUser($request->user('api'), 'create', User::class);
+
+
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
@@ -56,8 +61,11 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {   
+
+        $this->authorizeForUser($request->user('api'), 'view', User::class);
+
         $data['user']= $user->load('roles.permissions');
         $data['roles']= Role::get();
         return $this->sendResponse($data, 'Single User  return Successfully.', Response::HTTP_OK);
@@ -76,6 +84,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $this->authorizeForUser($request->user('api'), 'update', User::class);
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required'
@@ -105,6 +114,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorizeForUser($request->user('api'), 'delete', User::class);
         $user->delete();
         return $this->sendResponse('User Deleted Successfully.',Response::HTTP_OK);
 
@@ -143,6 +153,10 @@ public function revokeRoleFromUser(Request $request, User $user){
     return $this->sendResponse($user, 'Role assigned to user.', Response::HTTP_OK);
 }
 
+public function getUserPermission(Request $request){
+    $data['permissions']=$request->user()->roles->load('permissions')->pluck('permissions.*.slug')->flatten()->unique();
+    return $this->sendResponse($data, 'User Permissions.', Response::HTTP_OK);
+}
 
 
   

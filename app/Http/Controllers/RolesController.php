@@ -15,6 +15,7 @@ class RolesController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorizeForUser($request->user('api'), 'viewAny', Role::class);
         $data['roles']= Role::with('permissions')->Paginate($request->perPage);
         return $this->sendResponse($data, 'Role Return Successfully.', Response::HTTP_OK);
     }
@@ -32,7 +33,7 @@ class RolesController extends Controller
  */
     public function store(Request $request)
     {
-
+        $this->authorizeForUser($request->user('api'), 'create', Role::class);
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
@@ -76,6 +77,7 @@ class RolesController extends Controller
  */
     public function edit(Role $role)
     {
+        $this->authorize('update', $role);
         return $this->sendResponse($role, 'Role Return Successfully.', Response::HTTP_OK);
     }
 
@@ -86,6 +88,7 @@ class RolesController extends Controller
     public function update(Request $request, Role $role)
     {
 
+        $this->authorize('update', $role);
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',

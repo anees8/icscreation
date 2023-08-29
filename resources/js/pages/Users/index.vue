@@ -2,22 +2,25 @@
 import { storeToRefs } from "pinia";
 
 import { useUsersStore } from "@/stores/users.js";
+import { useLoginStore } from "@/stores/login.js";
+
 const {
-  users,
-  user,
-  roles,
-  fields,
-  options,
-  perPage,
-  currentPage,
-  modal, 
-  rows,
-  errors,
-  isBusy,roleOptions,selectedRoles
+users,
+user,
+roles,
+fields,
+options,
+perPage,
+currentPage,
+modal, 
+rows,
+errors,
+isBusy,roleOptions,selectedRoles
 } = storeToRefs(useUsersStore());
 
-const { getUsers, setPerPage, dateTime ,uploadData,editUser,deleteUser ,hideModel} = useUsersStore();
-
+const { getUsers, setPerPage, dateTime ,uploadData,editUser,deleteUser ,getRoles,hideModel} = useUsersStore();
+const {checkPermission } = useLoginStore();
+getRoles();
 getUsers();
 </script>
 <template>
@@ -32,7 +35,7 @@ getUsers();
              size="sm"
                @click="modal = !modal"
                class="float-end"
-
+               v-if="checkPermission('user_create')"
                variant="outline-dark"
              >
                <FontAwesomeIcon icon="plus" class="me-1"/>USER</b-button
@@ -176,6 +179,7 @@ getUsers();
              <template #cell(created_at)="data">{{ dateTime(data.item.created_at) }}</template>
              <template #cell(actions)="data"> 
                <b-button
+               v-if="checkPermission('user_update')"
                size="sm"
                class="circle me-2"
                @click="editUser(data.item.id)"
@@ -185,6 +189,7 @@ getUsers();
              </b-button>
  
              <b-button
+             v-if="checkPermission('user_delete')"
              size="sm"
                class="circle me-2"
                @click="deleteUser(data.item.id)"

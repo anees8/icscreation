@@ -9,14 +9,17 @@ export const useLoginStore = defineStore("loginStore", {
       password: "admin@123"
     },
     loading: false,
+    permissions:[],
     accessToken: localStorage.getItem("token"),
     errors: {}
   }),
 
   getters: {
-    getAccessToken: (state) => state.accessToken
+    getAccessToken: (state) => state.accessToken,
+    checkPermission:(state)=>(permission) =>state.permissions.includes(permission),
   },
   mutations: {},
+
   actions: {
     async login() {
       this.loading = true;
@@ -45,7 +48,17 @@ export const useLoginStore = defineStore("loginStore", {
         }
       }
     },
-
+    async getPermissions(){
+      try {
+        const response = await axios.get("users/permissions");
+        this.permissions=response.data.data.permissions;
+      } catch (error) {
+        if (error.response) {
+          this.errors = error.response.data.errors;
+        }
+      }
+    },
+   
     setToken: function (token) {
       this.accessToken = token;
       localStorage.setItem("token", token);

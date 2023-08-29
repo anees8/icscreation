@@ -1,7 +1,8 @@
 <script setup>
 import { storeToRefs } from "pinia";
-
 import { useRolesStore } from "@/stores/roles.js";
+import { useLoginStore } from "@/stores/login.js";
+const {checkPermission } = useLoginStore();
 const {
   roles,
   role,
@@ -34,7 +35,7 @@ getRoles();
            size="sm"
              @click="modal = !modal"
              class="float-end"
-
+             v-if="checkPermission('role_create')"
              variant="outline-dark"
            >
              <FontAwesomeIcon icon="plus" class="me-1"/>Role</b-button
@@ -110,6 +111,7 @@ getRoles();
 
            <template #cell(actions)="data"> 
              <b-button
+             v-if="checkPermission('role_update')"
              size="sm"
              class="circle me-2"
              @click="editRole(data.item.id)"
@@ -120,6 +122,7 @@ getRoles();
 
            <b-button
            size="sm"
+           v-if="checkPermission('role_delete')"
              class="circle me-2"
              @click="deleteRole(data.item.id)"
              variant="outline-danger"

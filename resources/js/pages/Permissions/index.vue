@@ -1,7 +1,8 @@
 <script setup>
 import { storeToRefs } from "pinia";
-
 import { usePermissionsStore } from "@/stores/permissions.js";
+import { useLoginStore } from "@/stores/login.js";
+const {checkPermission } = useLoginStore();
 const {
   permissions,
   permission,
@@ -31,7 +32,7 @@ getPermissions();
            size="sm"
              @click="modal = !modal"
              class="float-end"
-
+             v-if="checkPermission('permission_create')"
              variant="outline-dark"
            >
              <FontAwesomeIcon icon="plus" class="me-1"/>Permission</b-button
@@ -98,6 +99,7 @@ getPermissions();
                  
            <template #cell(actions)="data"> 
              <b-button
+             v-if="checkPermission('permission_update')"
              size="sm"
              class="circle me-2"
              @click="editPermission(data.item.id)"
@@ -107,6 +109,7 @@ getPermissions();
            </b-button>
 
            <b-button
+           v-if="checkPermission('permission_delete')"
            size="sm"
              class="circle me-2"
              @click="deletePermission(data.item.id)"
