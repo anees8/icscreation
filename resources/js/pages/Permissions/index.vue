@@ -96,6 +96,9 @@ getPermissions();
            responsive
            show-empty
          >
+
+         <template #cell(slug)="data">
+          <span class="badge bg-info text-dark me-1" > {{ data.item.slug }}</span></template>
                  
            <template #cell(actions)="data"> 
              <b-button

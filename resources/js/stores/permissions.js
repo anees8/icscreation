@@ -20,7 +20,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
         key: "slug",
         label: "Slug",
         thClass: "text-center",
-        tdClass: "text-center"
+        tdClass: "text-center " 
       },
       {
         key: "actions",
