@@ -150,7 +150,8 @@ getUsers();
            </b-row>
          </b-col>
          <b-col
-           ><b-table
+           >
+           <b-table
              striped
              outlined
              empty-filtered-text
@@ -177,6 +178,7 @@ getUsers();
           </template> 
            
              <template #cell(created_at)="data">{{ dateTime(data.item.created_at) }}</template>
+            
              <template #cell(actions)="data"> 
                <b-button
                v-if="checkPermission('user_update')"

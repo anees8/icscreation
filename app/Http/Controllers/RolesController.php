@@ -131,9 +131,9 @@ class RolesController extends Controller
 public function assignPermissionToRole(Request $request, Role $role){
 
         $validator = Validator::make($request->all(), [
-            'permission_id' => 'required|array',
-            'permission_id.*' => 'exists:permissions,id',
-    
+        'permission_id' => 'required|array',
+        'permission_id.*' => 'exists:permissions,id',
+
         ]);
 
         if ($validator->fails()) {
@@ -144,7 +144,11 @@ public function assignPermissionToRole(Request $request, Role $role){
         $role->load('permissions');
 
         return $this->sendResponse($role, 'Permission assigned to role.', Response::HTTP_OK);
-        }
+    }
+
+
+
+
 
 public function revokePermissionFromRole(Request $request, Role $role){
 
@@ -164,6 +168,23 @@ public function revokePermissionFromRole(Request $request, Role $role){
         return $this->sendResponse($role, 'Permission revoked from role.', Response::HTTP_OK);
         }
 
-    
+    public function assignAllPermissionToRole(Request $request, Role $role){
+
+            $allPermissions = Permission::all();
+
+            $permissionIds = $allPermissions->pluck('id')->toArray();
+            $role->permissions()->sync($permissionIds);
+            $role->load('permissions');
+            return $this->sendResponse($role, 'Permission assigned to role.', Response::HTTP_OK);
+        }
+            
+    public function removeAllPermissionsFromRole(Request $request, Role $role) {
+        // Detach all permissions from the role
+        $role->permissions()->detach();
+
+        $role->load('permissions');
+
+        return $this->sendResponse($role, 'All permissions removed from role.', Response::HTTP_OK);
+       }
   
 }

@@ -31,7 +31,10 @@ Route::middleware('auth:api')->group(function () {
         // Role Permissions
         Route::post('roles/{role}/permissions/assign', [RolesController::class, 'assignPermissionToRole']);
         Route::post('roles/{role}/permissions/revoke', [RolesController::class, 'revokePermissionFromRole']);
-
+        // Role all Permissions
+        Route::post('roles/{role}/permissions/assignAll', [RolesController::class, 'assignAllPermissionToRole']);
+        Route::post('roles/{role}/permissions/removeAll', [RolesController::class, 'removeAllPermissionsFromRole']);
+        
 
 
     Route::resources([
