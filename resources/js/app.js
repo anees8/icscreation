@@ -29,7 +29,8 @@ window.Swal=Swal;
 import '../css/App.css'
   
 
-axios.defaults.baseURL = "http://192.168.5.17:8000/api/";
+// axios.defaults.baseURL = "http://192.168.5.17:8000/api/";
+axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
 
 axios.defaults.headers.common["Authorization"] ="Bearer " + localStorage.getItem("token");
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";

@@ -11,12 +11,12 @@ class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
-     */
+     */ 
     public function index(Request $request)
     {
         $this->authorizeForUser($request->user('api'), 'view', User::class);
         
-        $data['users']= User::with('roles.permissions')->orderBy('id', 'DESC')->Paginate($request->perPage);
+        $data['users']= User::with('roles.permissions')->Paginate($request->perPage);
         return $this->sendResponse($data, 'Users return successfully.',Response::HTTP_OK);
     }
 
