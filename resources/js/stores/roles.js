@@ -68,7 +68,7 @@ export const useRolesStore = defineStore("rolesStore", {
 
   actions: {
     async getRoles() {
-      
+     
       this.isBusy = true;
       try {
         let url = "roles";
@@ -89,6 +89,7 @@ export const useRolesStore = defineStore("rolesStore", {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+        this.resetForm();
         this.isBusy = false;
       }
     },
@@ -107,6 +108,7 @@ export const useRolesStore = defineStore("rolesStore", {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+        this.resetForm();
        
       }
     },
@@ -135,6 +137,7 @@ export const useRolesStore = defineStore("rolesStore", {
             })
             .catch((error) => {
               this.errors = error.response.data.errors;
+              this.resetForm();
             });
         }
       });
@@ -183,6 +186,7 @@ export const useRolesStore = defineStore("rolesStore", {
           if (error.response) {
             this.errors = error.response.data.errors;
           }
+          this.resetForm();
           this.isBusy = false;
         }
       } else {
@@ -200,6 +204,7 @@ export const useRolesStore = defineStore("rolesStore", {
           if (error.response) {
             this.errors = error.response.data.errors;
           }
+          this.resetForm();
           this.isBusy = false;
         }
       }

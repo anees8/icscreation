@@ -70,6 +70,7 @@ export const useUsersStore = defineStore("usersStore", {
   },
   actions: {
     async getUsers() {
+     
       this.isBusy = true;
       try {
         let url = "users";
@@ -80,15 +81,17 @@ export const useUsersStore = defineStore("usersStore", {
           url += `${this.perPage ? "&" : "?"}page=${this.currentPage}`;
         }
         const response = await axios.get(url);
+        this.isBusy = false;
         this.users = response.data.data.users.data;
         this.currentPage = response.data.data.users.current_page;
         this.rows = response.data.data.users.total;
 
-        this.isBusy = false;
+    
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+        this.resetForm();
         this.isBusy = false;
       }
     },
@@ -104,6 +107,7 @@ export const useUsersStore = defineStore("usersStore", {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+        this.resetForm();
        
       }
     },
@@ -120,6 +124,7 @@ export const useUsersStore = defineStore("usersStore", {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+        this.resetForm();
        
       }
     },
@@ -146,6 +151,7 @@ export const useUsersStore = defineStore("usersStore", {
             })
             .catch((error) => {
               this.errors = error.response.data.errors;
+              this.resetForm();
             });
         }
       });
@@ -163,6 +169,7 @@ export const useUsersStore = defineStore("usersStore", {
 
     resetForm() {
       this.errors = {};
+     
       this.user = {};
       this.selectedRoles = null;
       this.isBusy = false;
@@ -214,6 +221,7 @@ export const useUsersStore = defineStore("usersStore", {
           if (error.response) {
             this.errors = error.response.data.errors;
           }
+          this.resetForm();
           this.isBusy = false;
         }
       } else {
@@ -230,6 +238,7 @@ export const useUsersStore = defineStore("usersStore", {
           if (error.response) {
             this.errors = error.response.data.errors;
           }
+          this.resetForm();
           this.isBusy = false;
         }
       }

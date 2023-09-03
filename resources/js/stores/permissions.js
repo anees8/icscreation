@@ -49,6 +49,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
 
   actions: {
     async getPermissions() {
+      
       this.isBusy = true;
       try {
         let url = "permissions";
@@ -59,6 +60,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
           url += `${this.perPage ? "&" : "?"}page=${this.currentPage}`;
         }
         const response = await axios.get(url);
+        
         this.permissions = response.data.data.permissions.data;
         this.currentPage = response.data.data.permissions.current_page;
         this.rows = response.data.data.permissions.total;
@@ -68,6 +70,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
         if (error.response) {
           this.errors = error.response.data.errors;
         }
+        this.resetForm();
         this.isBusy = false;
       }
     },
@@ -101,6 +104,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
             })
             .catch((error) => {
               this.errors = error.response.data.errors;
+              this.resetForm();
             });
         }
       });
@@ -147,6 +151,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
           if (error.response) {
             this.errors = error.response.data.errors;
           }
+          this.resetForm();
           this.isBusy = false;
         }
       } else {
@@ -164,6 +169,7 @@ export const usePermissionsStore = defineStore("permissionsStore", {
           if (error.response) {
             this.errors = error.response.data.errors;
           }
+          this.resetForm();
           this.isBusy = false;
         }
       }
