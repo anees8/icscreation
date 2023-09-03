@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useLoginStore } from "@/stores/login.js";
 
 export const useRolesStore = defineStore("rolesStore", {
   state: () => ({
@@ -37,8 +38,8 @@ export const useRolesStore = defineStore("rolesStore", {
     ],
     roles: [],
     role: {},
-    permissions: [],
-    selectedPermissions:[],
+    permissionsGroup:[],
+    selectedpermissions:[],
     perPage: 10,
     currentPage: 1,
     isBusy: false,
@@ -54,17 +55,20 @@ export const useRolesStore = defineStore("rolesStore", {
     errors: {}
   }),
   getters: {
-    permissionOptions() {
-
-      return this.permissions.map((permission) => ({
-        text: permission.name, // Display the role's name as text
-        value: permission.id, // Use the role's id as the value
-      }));
-    },
-  },
+    groupedPermissions: (state) => (data) => {
+    return data.reduce((grouped, permission) => {
+      const name = permission.name;
+      if (!grouped[name]) {
+        grouped[name] = [];
+      }
+      grouped[name].push(permission);
+      return grouped;
+    }, {});
+  }, },
 
   actions: {
     async getRoles() {
+      
       this.isBusy = true;
       try {
         let url = "roles";
@@ -78,6 +82,7 @@ export const useRolesStore = defineStore("rolesStore", {
         this.roles = response.data.data.roles.data;
         this.currentPage = response.data.data.roles.current_page;
         this.rows = response.data.data.roles.total;
+        this.permissionsGroup=response.data.data.permissionsgroup;
 
         this.isBusy = false;
       } catch (error) {
@@ -97,9 +102,7 @@ export const useRolesStore = defineStore("rolesStore", {
         
         this.role = response.data.data.role;
         this.modal = !this.modal;
-        this.permissions = response.data.data.permissions;
-        
-        this.selectedPermissions = this.role.permissions.map(permission => permission.id);;
+        this.selectedpermissions=this.role.permissions.map(permission => permission.id);
       } catch (error) {
         if (error.response) {
           this.errors = error.response.data.errors;
@@ -126,6 +129,8 @@ export const useRolesStore = defineStore("rolesStore", {
             .delete(url + id)
             .then((res) => {
               this.getRoles();
+              const loginStore = useLoginStore();
+              loginStore.getPermissions();
               Swal.fire("Deleted!", "Role has been deleted.", "success");
             })
             .catch((error) => {
@@ -142,7 +147,7 @@ export const useRolesStore = defineStore("rolesStore", {
 
     resetForm() {
       this.errors = {};
-      this.selectedPermissions=[];
+      this.selectedpermissions=[];
       this.role = {};
       this.isBusy = false;
     },
@@ -163,19 +168,16 @@ export const useRolesStore = defineStore("rolesStore", {
         formData.append("name", this.role.name);
       }
 
-      for (let i = 0; i < this.selectedPermissions.length; i++) {
-        formData.append(`permission_id[${i}]`, this.selectedPermissions[i]);
+      for (let i = 0; i < this.selectedpermissions.length; i++) {
+        formData.append(`permission_id[${i}]`, this.selectedpermissions[i]);
       }
-     
-
-      
-
-      
+    
       
       if (!this.role.id) {
         try {
           const response = await axios.post(url, formData, config);
-
+          const loginStore = useLoginStore();
+          loginStore.getPermissions();
           this.hideModel();
         } catch (error) {
           if (error.response) {
@@ -191,7 +193,8 @@ export const useRolesStore = defineStore("rolesStore", {
             formData,
             config
           );
-
+          const loginStore = useLoginStore();
+          loginStore.getPermissions();
           this.hideModel();
         } catch (error) {
           if (error.response) {

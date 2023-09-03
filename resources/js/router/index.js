@@ -85,7 +85,7 @@ const router = createRouter({
 
   router.beforeEach((to, from, next) => {
     const { getAccessToken,getPermissions } = useLoginStore();
-    getPermissions();
+    
     if (to.meta.requireAuth && getAccessToken === null) {
         next({ name: "Login" });
     }
@@ -94,8 +94,12 @@ const router = createRouter({
         !to.meta.requireAuth &&
         getAccessToken !== null
     ) {
+      
         next({ name: "Dashboard" });
     }
+   if(getAccessToken !== null){
+    getPermissions();
+   }
     next();
   });
   

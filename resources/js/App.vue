@@ -10,22 +10,21 @@ const Sidebar = defineAsyncComponent(() =>
 // Simulate page loading
 setTimeout(() => {
   isLoading.value = false;
-}, 500);
+}, 1000);
 
 </script>
 <template>
-        <div v-if="isLoading">
-        <BContainer fluid >
+        
+        <BContainer fluid v-if="isLoading">
         <BRow class="align-items-center justify-content-center vh-100 text-center ">
         <BCol>
         <BSpinner></BSpinner>
         </BCol>
         </BRow>
         </BContainer>
-        </div>
         <div v-else>
         <div class="sidebar">
-        <Sidebar  v-if="!['Login', 'notfound', 'Logout'].includes($route.name)"/>
+        <Sidebar  v-if='!["Login", "notfound", "Logout"].includes($route.name)'/>
         <div class="content">
         <RouterView />
         </div>

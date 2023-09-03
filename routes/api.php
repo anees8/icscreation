@@ -34,9 +34,8 @@ Route::middleware('auth:api')->group(function () {
         // Role all Permissions
         Route::post('roles/{role}/permissions/assignAll', [RolesController::class, 'assignAllPermissionToRole']);
         Route::post('roles/{role}/permissions/removeAll', [RolesController::class, 'removeAllPermissionsFromRole']);
-        
-
-
+      
+    
     Route::resources([
         'roles' => RolesController::class,
         'users' => UserController::class,

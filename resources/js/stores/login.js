@@ -16,7 +16,11 @@ export const useLoginStore = defineStore("loginStore", {
 
   getters: {
     getAccessToken: (state) => state.accessToken,
-    checkPermission:(state)=>(permission) =>state.permissions.includes(permission),
+    checkPermission: (state) => (name,action) => {
+      return state.permissions.some((permission) => {
+        return permission.name === name && permission.action === action;
+      });
+    },
   },
   mutations: {},
 

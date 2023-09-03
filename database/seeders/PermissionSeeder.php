@@ -18,108 +18,119 @@ class PermissionSeeder extends Seeder
         $permissions = [
             [
                 'id' => 1,
-                'name' => 'User View Any',
-                'slug' => 'user_view_any',
+                'name' => 'users',
+                'action'=>'View Any'
             ],
             [
                 'id' => 2,
-                'name' => 'User View',
-                'slug' => 'user_view',
+                'name' => 'users',
+                'action'=>'View'
             ],
             [
                 'id' => 3,
-                'name' => 'User Create',
-                'slug' => 'user_create',
+                'name' => 'users',
+                'action'=>'Create'
             ],
             [
                 'id' => 4,
-                'name' => 'User Update',
-                'slug' => 'user_update',
+                'name' => 'users',
+                'action'=>'Update'
             ],
             [
                 'id' => 5,
-                'name' => 'User Delete',
-                'slug' => 'user_delete',
+                'name' => 'users',
+                'action'=>'Delete'
             ],
             [
                 'id' => 6,
-                'name' => 'User Restore',
-                'slug' => 'user_restore',
+        
+                'name' => 'users',
+                'action'=>'Restore'
             ],
             [
                 'id' => 7,
-                'name' => 'User Force Delete',
-                'slug' => 'user_force_delete',
+                
+                'name' => 'users',
+                'action'=>'Force Delete'
             ],
             [
                 'id' => 8,
-                'name' => 'Role View Any',
-                'slug' => 'role_view_any',
+                'name' => 'roles',
+                'action'=>'View Any'
             ],
             [
                 'id' => 9,
-                'name' => 'Role View',
-                'slug' => 'role_view',
+                'name' => 'roles',
+                'action'=>'View'
             ],
             [
                 'id' => 10,
-                'name' => 'Role Create',
-                'slug' => 'role_create',
+                'name' => 'roles',
+                'action'=>'Create'
             ],
             [
                 'id' => 11,
-                'name' => 'Role Update',
-                'slug' => 'role_update',
+            
+                'name' => 'roles',
+                'action'=>'Update'
             ],
             [
                 'id' => 12,
-                'name' => 'Role Delete',
-                'slug' => 'role_delete',
+               
+                'name' => 'roles',
+                'action'=>'Delete'
             ],
             [
                 'id' => 13,
-                'name' => 'Role Restore',
-                'slug' => 'role_restore',
+              
+                'name' => 'roles',
+                'action'=>'Restore'
             ],
             [
                 'id' => 14,
-                'name' => 'Role Force Delete',
-                'slug' => 'role_force_delete',
+               
+                'name' => 'roles',
+                'action'=>'Force Delete'
             ],
             [
                 'id' => 15,
-                'name' => 'Permission View Any',
-                'slug' => 'permission_view_any',
+               
+                'name' => 'permissions',
+                'action'=>'View Any'
             ],
             [
                 'id' => 16,
-                'name' => 'Permission View',
-                'slug' => 'permission_view',
+               
+                'name' => 'permissions',
+                'action'=>'View'
             ],
             [
                 'id' => 17,
-                'name' => 'Permission Create',
-                'slug' => 'permission_create',
+               
+                'name' => 'permissions',
+                'action'=>'Create'
             ],
             [
                 'id' => 18,
-                'name' => 'Permission Update',
-                'slug' => 'permission_update',
+                
+                'name' => 'permissions',
+                'action'=>'Update'
             ],
             [
                 'id' => 19,
-                'name' => 'Permission Delete',
-                'slug' => 'permission_delete',
+            
+                'name' => 'permissions',
+                'action'=>'Delete'
             ],
             [
                 'id' => 20,
-                'name' => 'Permission Restore',
-                'slug' => 'permission_restore',
+                'name' => 'permissions',
+                'action'=>'Restore'
             ],
             [
                 'id' => 21,
-                'name' => 'Permission Force Delete',
-                'slug' => 'permission_force_delete',
+                'name' => 'permissions',
+                'action'=>'Force Delete'
             ],
             
             // Add more permissions here

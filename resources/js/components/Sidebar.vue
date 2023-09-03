@@ -1,34 +1,37 @@
 <script setup>
 import MenuItem from './Menu/MenuItem.vue';
-import logo from '../../../public/logo/logo6.png'
-import logobag from '../../../public/logo/logo4.png'
+import logo from '../../../public/logo/logo6.png';
 const menuTree = [
 {
 label: "Dashboard",
 icon: "gauge",
 name: "Dashboard",
+permission: "",
 },
 {
 label: "Users",
 icon: "user",  
 name: "Users",
+permission: "users",
 },
-
 {
 label: "Roles",
 icon: "user-gear",
 name: "Roles",
+permission: "roles",
 },
 
 {
 label: "Permissions",
 icon: "key",
 name: "Permissions",
+permission: "permissions",
 },
 {
 label: "Logout",
 icon: "right-from-bracket",
 name: "Logout",
+permission: "",
 },
 
 
@@ -60,6 +63,7 @@ font-family: Righteous;
     :key="index"
     :label="item.label"
     :icon="item.icon"
-    :name="item.name" />
+    :name="item.name"
+    :permission="item.permission"></MenuItem>
    </aside>
   </template>

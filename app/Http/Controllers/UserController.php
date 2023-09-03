@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User,Role};
+use App\Models\{User,Role,Permission};
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
@@ -154,7 +154,16 @@ public function revokeRoleFromUser(Request $request, User $user){
 }
 
 public function getUserPermission(Request $request){
-    $data['permissions']=$request->user()->roles->load('permissions')->pluck('permissions.*.slug')->flatten()->unique();
+    $data['permissions']= $request->user()
+    ->roles()
+    ->with('permissions:id,name,action') // Load only the specified columns
+    ->get() // Retrieve the roles
+    ->pluck('permissions') // Pluck the 'permissions' relationship
+    ->flatten(1) // Flatten the collection by one level
+    ->unique('id') // Assuming 'id' is unique for each permission
+    ->values(); // Re-index the array keys if needed
+    
+    
     return $this->sendResponse($data, 'User Permissions.', Response::HTTP_OK);
 }
 

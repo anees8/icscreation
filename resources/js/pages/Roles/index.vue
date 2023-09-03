@@ -13,12 +13,10 @@ const {
   modal, 
   rows,
   errors,
-  isBusy,
-  permissionOptions,
-  selectedPermissions
+  isBusy,permissionsGroup,selectedpermissions
 } = storeToRefs(useRolesStore());
 
-const { getRoles, setPerPage ,uploadData,editRole,deleteRole , hideModel} = useRolesStore();
+const { getRoles, setPerPage,uploadData,editRole,deleteRole , groupedPermissions,hideModel} = useRolesStore();
 
 getRoles();
 </script>
@@ -35,13 +33,14 @@ getRoles();
            size="sm"
              @click="modal = !modal"
              class="float-end"
-             v-if="checkPermission('role_create')"
+             v-if="checkPermission('roles','Create')"
              variant="outline-dark"
            >
              <FontAwesomeIcon icon="plus" class="me-1"/>Role</b-button
            >
            <div>
              <b-modal
+             size="lg"
                v-model="modal"
                :title="role.id ? 'Update Role' : 'Add Role'"
              
@@ -49,6 +48,7 @@ getRoles();
                no-close-on-backdrop
              >
                 <BFormGroup
+                class="mb-3"
                 id="input-group-1"
                 label="Your Role Name:"
                 label-for="input-1"
@@ -66,16 +66,32 @@ getRoles();
                 }}</BFormInvalidFeedback>
                 </BFormGroup>
 
-                <BFormGroup
-                id="input-group-1"
-                label="Select Your Permissions:"
-                label-for="input-1"
-                >
-                <BFormSelect v-model="selectedPermissions" multiple :options="permissionOptions"></BFormSelect>
-              </BFormGroup>
-              
-
-     <template #footer>
+          <div class="ps-2">
+          <b-form-group
+          v-for="(groups,index) in permissionsGroup" :key="index"
+          :label="index.charAt(0).toUpperCase() + index.slice(1)"
+          v-slot="{ ariaDescribedby }"
+          :label-class="'text-info fw-bold'"
+          >
+          <b-form-checkbox-group
+          v-model="selectedpermissions"
+          :aria-describedby="ariaDescribedby"
+         
+          >
+          <b-form-checkbox
+          v-for="(group, index) in groups"
+          :key="group.id"
+          :value="group.id"
+          :id="group.id"
+        >
+          {{ group.action }}
+        </b-form-checkbox>
+        
+        </b-form-checkbox-group>
+        <hr class="p-0 m-0"/>
+          </b-form-group>
+        </div>
+                 <template #footer>
                  <div>
                    <button class="btn btn-outline-dark" @click="hideModel">Close</button>
                  </div>
@@ -104,14 +120,16 @@ getRoles();
            responsive
            show-empty
          >
-                <template #cell(permissions)="data">            
-
-                <span class="badge bg-info text-dark me-1" v-for="permission in   data.item.permissions" :key="permission.id">{{ permission.name }}</span>
+                <template #cell(permissions)="data">
+                  
+            <div v-for="(items, group) in groupedPermissions(data.item.permissions)" :key="group">
+            <span class="fw-bold">{{ group}}: </span><span class="fw-normal badge bg-info text-dark me-1" v-for="item in items" :key="item.id">{{ item.action}}</span>   
+            </div>
                 </template> 
 
            <template #cell(actions)="data"> 
              <b-button
-             v-if="checkPermission('role_update')"
+             v-if="checkPermission('roles','Update')"
              size="sm"
              class="circle me-2"
              @click="editRole(data.item.id)"
@@ -122,7 +140,7 @@ getRoles();
 
            <b-button
            size="sm"
-           v-if="checkPermission('role_delete')"
+           v-if="checkPermission('roles','Delete')"
              class="circle me-2"
              @click="deleteRole(data.item.id)"
              variant="outline-danger"

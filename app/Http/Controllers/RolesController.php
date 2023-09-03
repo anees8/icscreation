@@ -16,9 +16,13 @@ class RolesController extends Controller
     public function index(Request $request)
     {
         $this->authorizeForUser($request->user('api'), 'viewAny', Role::class);
-        $data['roles']= Role::with('permissions')->Paginate($request->perPage);
+        $data['roles']= Role::with('permissions')->Paginate($request->perPage); 
+
+        
+        $data['permissionsgroup']=Permission::get()->groupBy('name');    
         return $this->sendResponse($data, 'Role Return Successfully.', Response::HTTP_OK);
     }
+
 
     /**
      * Show the form for creating a new resource.

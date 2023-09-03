@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useLoginStore } from "@/stores/login.js";
 
 export const usePermissionsStore = defineStore("permissionsStore", {
   state: () => ({
@@ -93,6 +94,8 @@ export const usePermissionsStore = defineStore("permissionsStore", {
           axios
             .delete(url + id)
             .then((res) => {
+              const loginStore = useLoginStore();
+              loginStore.getPermissions();
               this.getPermissions();
               Swal.fire("Deleted!", "Permission has been deleted.", "success");
             })
@@ -137,7 +140,8 @@ export const usePermissionsStore = defineStore("permissionsStore", {
       if (!this.permission.id) {
         try {
           const response = await axios.post(url, formData, config);
-
+          const loginStore = useLoginStore();
+          loginStore.getPermissions();
           this.hideModel();
         } catch (error) {
           if (error.response) {
@@ -153,7 +157,8 @@ export const usePermissionsStore = defineStore("permissionsStore", {
             formData,
             config
           );
-
+          const loginStore = useLoginStore();
+          loginStore.getPermissions();
           this.hideModel();
         } catch (error) {
           if (error.response) {

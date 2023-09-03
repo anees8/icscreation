@@ -32,7 +32,7 @@ getPermissions();
            size="sm"
              @click="modal = !modal"
              class="float-end"
-             v-if="checkPermission('permission_create')"
+             v-if="checkPermission('permissions','Create')"
              variant="outline-dark"
            >
              <FontAwesomeIcon icon="plus" class="me-1"/>Permission</b-button
@@ -102,7 +102,7 @@ getPermissions();
                  
            <template #cell(actions)="data"> 
              <b-button
-             v-if="checkPermission('permission_update')"
+             v-if="checkPermission('permissions','Update')"
              size="sm"
              class="circle me-2"
              @click="editPermission(data.item.id)"
@@ -112,7 +112,7 @@ getPermissions();
            </b-button>
 
            <b-button
-           v-if="checkPermission('permission_delete')"
+           v-if="checkPermission('permissions','Delete')"
            size="sm"
              class="circle me-2"
              @click="deletePermission(data.item.id)"

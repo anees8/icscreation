@@ -13,7 +13,9 @@ class PermissionPolicy
      */
     public function viewAny(User $user): bool
     {
-         return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_view_any');
+        return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'View Any';
+        });
     }
 
     /**
@@ -21,7 +23,9 @@ class PermissionPolicy
      */
     public function view(User $user, Permission $permission): bool
     {
-        return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_view');
+       return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'View';
+        });
     }
 
     /**
@@ -29,7 +33,9 @@ class PermissionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_create');
+       return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'Create';
+        });
     }
 
     /**
@@ -37,7 +43,9 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission): bool
     {
-        return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_update');
+       return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'Update';
+        });
     }
 
     /**
@@ -45,7 +53,9 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission): bool
     {
-        return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_delete');
+       return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'Delete';
+        });
     }
 
     /**
@@ -53,7 +63,9 @@ class PermissionPolicy
      */
     public function restore(User $user, Permission $permission): bool
     {
-        return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_restore');
+       return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'Restore';
+        });
     }
 
     /**
@@ -61,6 +73,8 @@ class PermissionPolicy
      */
     public function forceDelete(User $user, Permission $permission): bool
     {
-        return $user->roles->pluck('permissions')->flatten()->pluck('slug')->contains('permission_force_delete');
+       return $user->roles->pluck('permissions')->flatten()->contains(function ($permission) {
+            return $permission['name'] === 'permissions' && $permission['action'] === 'Force Delete';
+        });
     }
 }

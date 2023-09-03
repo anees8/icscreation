@@ -1,6 +1,7 @@
 <script setup>
 import {RouterLink} from 'vue-router';
-
+import { useLoginStore } from "@/stores/login.js";
+const {checkPermission } = useLoginStore();
 
 defineProps({
   label: {
@@ -14,14 +15,19 @@ defineProps({
   icon: {
     type: String,
     required: true
-  }
+  },
+  permission: {
+    type: String,
+    required: true
+  },
 });
 </script>
 <template>
-    <div>
+    
     <RouterLink
       class="nav-link p-3"
       v-bind:to="{ name: name }"
+      v-if='checkPermission(permission,"View Any")||permission==""'
     >
     <div class="fw-bold">
         <div>
@@ -31,7 +37,6 @@ defineProps({
         </div>
         </div>
     </RouterLink>
-</div>
     <hr class="m-0"/>
 </template>
 <style scoped>

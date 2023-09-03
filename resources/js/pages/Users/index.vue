@@ -35,7 +35,7 @@ getUsers();
              size="sm"
                @click="modal = !modal"
                class="float-end"
-               v-if="checkPermission('user_create')"
+               v-if='checkPermission("users","Create")'
                variant="outline-dark"
              >
                <FontAwesomeIcon icon="plus" class="me-1"/>USER</b-button
@@ -122,7 +122,7 @@ getUsers();
                    </BFormGroup>
 
            
-                      <BFormGroup class="mt-2" label="Select User Role" v-slot="{ ariaDescribedby }">
+                      <BFormGroup v-if='checkPermission("roles","Update")' class="mt-2" label="Select User Role" v-slot="{ ariaDescribedby }">
                       <BFormRadioGroup
                       v-model="selectedRoles"
                       :options="roleOptions"
@@ -168,20 +168,13 @@ getUsers();
            <template #cell(roles)="data">
             <span class="badge bg-info text-dark" v-for="role in data.item.roles" :key="role.id">{{ role.name }}</span>
           </template>
-          <template #cell(permissions)="data">
-          
-<span  v-for="role in data.item.roles" :key="role.id">
-
-  <span class="badge bg-info text-dark me-1" v-for="permission in role.permissions" :key="permission.id">{{ permission.name }}</span>
-</span>
-       
-          </template> 
+         
            
              <template #cell(created_at)="data">{{ dateTime(data.item.created_at) }}</template>
             
              <template #cell(actions)="data"> 
                <b-button
-               v-if="checkPermission('user_update')"
+               v-if="checkPermission('users','Update')"
                size="sm"
                class="circle me-2"
                @click="editUser(data.item.id)"
@@ -191,7 +184,7 @@ getUsers();
              </b-button>
  
              <b-button
-             v-if="checkPermission('user_delete')"
+             v-if="checkPermission('users','Delete')"
              size="sm"
                class="circle me-2"
                @click="deleteUser(data.item.id)"

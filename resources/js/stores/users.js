@@ -30,12 +30,6 @@ export const useUsersStore = defineStore("usersStore", {
         tdClass: "text-center"
       },
       {
-        key: "permissions",
-        label: "Permissions",
-        thClass: "text-center",
-        tdClass: "text-center mw-30"
-      },
-      {
         key: "created_at",
         label: "Created Date",
         thClass: "text-center",
