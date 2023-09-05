@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class PermissionsController extends Controller
@@ -36,10 +35,11 @@ class PermissionsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => [
-                'required',
-                'unique:permissions,name,','min:3','max:50'
+                'required','min:3','max:50'
             ],
-
+            'action' => [
+                'required','min:3','max:50'
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -47,7 +47,7 @@ class PermissionsController extends Controller
         }
         $permission = new Permission();
         $permission->name = $request->name;
-        $permission->slug = Str::slug($request->name,'_');
+        $permission->action =$request->action;
 
         $permission->save();
         return $this->sendResponse($permission, 'Permission Created Successfully.', Response::HTTP_CREATED);
@@ -79,10 +79,11 @@ class PermissionsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => [
-                'required',
-                'unique:roles,name,' . $permission->id, 'min:3', 'max:50',
+                'required','min:3','max:50'
             ],
-
+            'action' => [
+                'required','min:3','max:50'
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -91,7 +92,7 @@ class PermissionsController extends Controller
 
 
         $permission->name = $request->name;
-        $permission->slug = Str::slug($request->name,'_');
+        $permission->action =$request->action;
         $permission->update();
         return $this->sendResponse($permission, 'Permission Updated Successfully.', Response::HTTP_OK);
 

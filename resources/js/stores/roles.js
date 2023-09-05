@@ -45,14 +45,14 @@ export const useRolesStore = defineStore("rolesStore", {
     isBusy: false,
     rows: null,
     modal: false,
+    errors: {},
     options: [
       { value: 5, text: "5" },
       { value: 10, text: "10" },
       { value: 50, text: "50" },
       { value: 100, text: "100" }
     ],
-
-    errors: {}
+   
   }),
   getters: {
     groupedPermissions: (state) => (data) => {
@@ -149,7 +149,6 @@ export const useRolesStore = defineStore("rolesStore", {
     },
 
     resetForm() {
-      this.errors = {};
       this.selectedpermissions=[];
       this.role = {};
       this.isBusy = false;
@@ -183,6 +182,7 @@ export const useRolesStore = defineStore("rolesStore", {
           loginStore.getPermissions();
           this.hideModel();
         } catch (error) {
+         
           if (error.response) {
             this.errors = error.response.data.errors;
           }

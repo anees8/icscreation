@@ -62,11 +62,24 @@ getPermissions();
                 errors.name[0]
                 }}</BFormInvalidFeedback>
                 </BFormGroup>
+                <BFormGroup
+                id="input-group-2"
+                label="Your Permission Actions:"
+                label-for="input-2"
+                >
+                <BFormInput
+                id="input-2"
+                v-model="permission.action"
+                :class="errors && errors.action ? 'is-invalid' : ''"
+                :disabled="!isBusy ? false : true"
+                type="text"
+                placeholder="Enter Permission Action"
+                />
+                <BFormInvalidFeedback v-if="errors && errors.action">{{
+                errors.action[0]
+                }}</BFormInvalidFeedback>
+                </BFormGroup>
                 
-               
-        
-
-
      <template #footer>
                  <div>
                    <button class="btn btn-outline-dark" @click="hideModel">Close</button>
@@ -97,8 +110,8 @@ getPermissions();
            show-empty
          >
 
-         <template #cell(slug)="data">
-          <span class="badge bg-info text-dark me-1" > {{ data.item.slug }}</span></template>
+         <template #cell(action)="data">
+          <span class="badge bg-info text-dark me-1" > {{ data.item.action }}</span></template>
                  
            <template #cell(actions)="data"> 
              <b-button

@@ -18,14 +18,14 @@ export const usePermissionsStore = defineStore("permissionsStore", {
         tdClass: "text-center"
       },
       {
-        key: "slug",
-        label: "Slug",
+        key: "action",
+        label: "Action",
         thClass: "text-center",
         tdClass: "text-center " 
       },
       {
         key: "actions",
-        label: "Action",
+        label: "Actions",
         thClass: "text-center",
         tdClass: "text-center"
       }
@@ -119,9 +119,8 @@ export const usePermissionsStore = defineStore("permissionsStore", {
     },
 
     resetForm() {
-      this.errors = {};
-
-      this.permission = {};
+    
+    this.permission = {};
       this.isBusy = false;
     },
     hideModel() {
@@ -139,6 +138,9 @@ export const usePermissionsStore = defineStore("permissionsStore", {
       let url = "permissions";
       if (this.permission.name) {
         formData.append("name", this.permission.name);
+      }
+      if (this.permission.action) {
+        formData.append("action", this.permission.action);
       }
       
       if (!this.permission.id) {

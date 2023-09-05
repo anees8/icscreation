@@ -168,7 +168,7 @@ export const useUsersStore = defineStore("usersStore", {
     },
 
     resetForm() {
-      this.errors = {};
+ 
      
       this.user = {};
       this.selectedRoles = null;

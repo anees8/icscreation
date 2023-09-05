@@ -14,6 +14,7 @@ const { login, resetForm } = useLoginStore();
                      <span class="h1 fw-bold logo">Creations</span>
 
                     </BCol>
+
                     <BCol  v-if="errors && errors.error"  cols="12" class="text-center">
                         <span  class="text-danger">{{ errors.error }}</span>
                     </BCol>

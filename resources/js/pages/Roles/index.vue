@@ -26,6 +26,7 @@ getRoles();
    <b-row>
      <b-card>
        <b-col>
+       
          <b-row align-v="center">
            <b-col><h5>Roles List</h5></b-col>
            <b-col>
@@ -56,11 +57,12 @@ getRoles();
                 <BFormInput
                 id="input-1"
                 v-model="role.name"
-                :class="errors && errors.name ? 'is-invalid' : ''"
+                :class="errors && errors.name ? 'is-invalid' : ''" 
                 :disabled="!isBusy ? false : true"
                 type="text"
                 placeholder="Enter Role Name"
                 />
+
                 <BFormInvalidFeedback v-if="errors && errors.name">{{
                 errors.name[0]
                 }}</BFormInvalidFeedback>
@@ -71,13 +73,14 @@ getRoles();
           v-for="(groups,index) in permissionsGroup" :key="index"
           :label="index.charAt(0).toUpperCase() + index.slice(1)"
           v-slot="{ ariaDescribedby }"
-          :label-class="'text-info fw-bold'"
+          :label-class="'text-dark fw-bold'"
           >
+
           <b-form-checkbox-group
           v-model="selectedpermissions"
           :aria-describedby="ariaDescribedby"
-         
-          >
+          >  
+        
           <b-form-checkbox
           v-for="(group, index) in groups"
           :key="group.id"
@@ -88,9 +91,11 @@ getRoles();
         </b-form-checkbox>
         
         </b-form-checkbox-group>
-        <hr class="p-0 m-0"/>
+       
           </b-form-group>
         </div>
+
+        
                  <template #footer>
                  <div>
                    <button class="btn btn-outline-dark" @click="hideModel">Close</button>
