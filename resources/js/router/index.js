@@ -50,6 +50,16 @@ const routes = [
         },
         
     },
+    {
+        path: "/invoice",
+        name: "Invoice",
+        component: ()=>import('../pages/Invoice/index.vue'),
+        meta: {
+            requireAuth: true,    
+          
+        },
+        
+    },
     
     {
         path: '/logout',

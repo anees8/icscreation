@@ -15,6 +15,12 @@ name: "Users",
 permission: "users",
 },
 {
+label: "Invoice",
+icon: "user",  
+name: "Invoice",
+permission: "",
+},
+{
 label: "Roles",
 icon: "user-gear",
 name: "Roles",

@@ -14,7 +14,7 @@ setTimeout(() => {
 
 </script>
 <template>
-        
+        <div class="mw-100">
         <BContainer fluid v-if="isLoading">
         <BRow class="align-items-center justify-content-center vh-100 text-center ">
         <BCol>
@@ -27,21 +27,23 @@ setTimeout(() => {
         <Sidebar  v-if='!["Login", "notfound", "Logout"].includes($route.name)'/>
         <div class="content">
         <RouterView />
+       
         </div>
         </div>
-        </div>
+        </div></div>
         </template>
 
 <style scoped>
 .sidebar {
   display: flex;
+  overflow: hidden;
 
 }
 
 .sidebar .content {
   flex: 1 1 0;
   background: #EEEDE7;
-
+  overflow: hidden;
 
 }
 

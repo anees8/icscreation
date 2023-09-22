@@ -7,7 +7,8 @@ const HomeCards = defineAsyncComponent(() =>
 </script>
 <template>
 <BContainer fluid>
-    <BRow>
+<BRow>
+
 <HomeCards/>
 </BRow>
 </BContainer>

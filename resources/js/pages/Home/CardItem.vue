@@ -1,3 +1,1 @@
-<template>
-  card
-</template>
+<template>d</template>

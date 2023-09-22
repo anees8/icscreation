@@ -19,7 +19,7 @@ import {
 } from "@fortawesome/vue-fontawesome";
 library.add(
     faArrowRight,
-    faUser,
+    faUser,faPlus,faTrash,
     faArrowsRotate, faGauge, faRightFromBracket,faUserGear,faKey,faPlus,faPen,faTrash
   );
 
