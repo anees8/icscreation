@@ -8,7 +8,7 @@ import VueAxios from "vue-axios";
 import  { BootstrapVueNext }  from "bootstrap-vue-next";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
-  faArrowRight,faArrowsRotate,faGauge, faKey, faRightFromBracket, faUserGear,faUser, faPlus, faPen, faTrash
+  faArrowRight,faArrowsRotate,faGauge, faKey, faRightFromBracket, faUserGear,faUser, faPlus, faPen, faTrash,faDownload, faFileInvoice
 } from "@fortawesome/free-solid-svg-icons";
 import {  } from "@fortawesome/free-regular-svg-icons";
 
@@ -20,7 +20,7 @@ import {
 library.add(
     faArrowRight,
     faUser,faPlus,faTrash,
-    faArrowsRotate, faGauge, faRightFromBracket,faUserGear,faKey,faPlus,faPen,faTrash
+    faArrowsRotate, faGauge, faRightFromBracket,faUserGear,faKey,faPlus,faPen,faTrash,faDownload,faFileInvoice
   );
 
 import Swal from 'sweetalert2';
