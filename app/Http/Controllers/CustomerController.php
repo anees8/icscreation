@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Customer;
+use App\Models\{Customer,User};
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -10,9 +10,12 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $this->authorizeForUser($request->user('api'),'view', User::class, Customer::class);
+        
+        $data['customers']= Customer::where('name','Like', '%'.$request->search.'%')->Paginate($request->perPage);
+        return $this->sendResponse($data, 'Customers return successfully.',Response::HTTP_OK);
     }
 
     /**

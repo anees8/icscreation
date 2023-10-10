@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,PermissionsController,RolesController,UserController};
+use App\Http\Controllers\{AuthController,PermissionsController,RolesController,UserController,CustomerController};
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +20,6 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('register', [AuthController::class, 'register']);
-
-
-
          Route::get('users/permissions', [UserController::class, 'getUserPermission']);
         // User Roles
         Route::post('users/{user}/roles/assign', [UserController::class, 'assignRoleToUser']);
@@ -40,6 +37,7 @@ Route::middleware('auth:api')->group(function () {
         'roles' => RolesController::class,
         'users' => UserController::class,
         'permissions' => PermissionsController::class,
+        'customers' =>  CustomerController::class,
     ]);
 
 });

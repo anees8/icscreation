@@ -25,10 +25,18 @@ const props =defineProps({
     type:String,
     required: true
   },
-  GstPercentage:{
-    type:String,
+  cgst:{
+    type:Number,
     required: true
-  }
+  },
+  sgst:{
+    type:Number,
+    required: true
+  },
+  igst:{
+    type:Number,
+    required: true
+  },
   
 });
 const subtotal = computed(() => {
@@ -155,8 +163,8 @@ function formatDate(inputDate) {
         margin: 0;
         "
         />
-        <div style="display: flex; align-items: center; padding: 2mm 0 0 0">
-        <div style="flex: 1; color: #27374d; padding-left: 20mm">
+        <div style="display: flex; align-items: start; padding: 2mm 0 0 0">
+        <div style="flex: 1; color: #27374d; padding-left: 15mm">
         <h6 style="font-weight: bolder; padding: 0; margin: 0">
         <u>Delivery To</u>:
         </h6>
@@ -191,24 +199,25 @@ function formatDate(inputDate) {
         margin: 0;
         "
         >
-        <li>{{customer.address}}</li>
-        <li>Phone: {{customer.phone}}</li>
-        <li>Email: {{customer.email}}</li>
-        <li><strong>GST# : {{customer.gst}}</strong></li>
+        <li   v-if="customer.address">{{customer.address}}</li>
+        <li v-if="customer.phone">Phone: {{customer.phone}}</li>
+        <li v-if="customer.email">Email: {{customer.email}}</li>
+        <li v-if="customer.gst_number"><strong>GST# : {{customer.gst_number}}</strong></li>
         </ul>
         </div>
-        <div style="flex: 1; color: #27374d; padding: 0">
+        <div style="flex: 1; color: #27374d; padding:5mm">
         <ul
         style="
         list-style-type: none;
         font-weight: bold;
         margin: 0;
-        line-height: 2.5rem;
+        padding-top:10px;
+        line-height: 2rem;
         "
         >
-        <li>Invoice Number: {{InvoiceNumber}}</li>
-        <li>Invoice Date: {{ formatDate(InvoiceDate) }}</li>
-        <li>Transport: {{DeliveryType}}</li>
+        <li><strong>Invoice Number: {{InvoiceNumber}}</strong></li>
+        <li><strong>Invoice Date: {{ formatDate(InvoiceDate) }}</strong></li>
+        <li><strong>Transport: {{DeliveryType}}</strong></li>
         </ul>
         </div>
         </div>
@@ -271,7 +280,7 @@ function formatDate(inputDate) {
                                 {{ formattedAmount(subtotal) }}
                             </td>
                         </tr>
-                        <tr style="line-height: 2rem; color: #27374d">
+                        <tr  v-if="cgst!=0" style="line-height: 2rem; color: #27374d">
                             <td
                                 colspan="6"
                                 style="
@@ -280,14 +289,15 @@ function formatDate(inputDate) {
                                     padding: 5px;
                                 "
                             >
-                                CGST ({{(GstPercentage/2)}}%)
+                                CGST ({{cgst}}%)
                             </td>
                             <td style="padding: 5px">
-                                {{ formattedAmount((subtotal * (GstPercentage/2)) / 100) }}
+                                {{ formattedAmount((subtotal * cgst) / 100) }}
                             </td>
                         </tr>
-                        <tr style="line-height: 2rem; color: #27374d">
+                        <tr v-if="sgst!=0" style="line-height: 2rem; color: #27374d">
                             <td
+                            
                                 colspan="6"
                                 style="
                                     text-align: right;
@@ -295,10 +305,63 @@ function formatDate(inputDate) {
                                     padding: 5px;
                                 "
                             >
-                                SGST ({{(GstPercentage/2)}}%)
+                                SGST ({{(sgst)}}%)
                             </td>
                             <td style="padding: 5px">
-                                {{ formattedAmount((subtotal *(GstPercentage/2)) / 100) }}
+                                {{ formattedAmount((subtotal * sgst) / 100) }}
+                            </td>
+                        </tr>
+                        <tr v-if="igst!=0" style="line-height: 2rem; color: #27374d">
+                            <td
+                            
+                                colspan="6"
+                                style="
+                                    text-align: right;
+                                    font-weight: bold;
+                                    padding: 5px;
+                                "
+                            >
+                                IGST ({{(igst)}}%)
+                            </td>
+                            <td style="padding: 5px">
+                                {{ formattedAmount((subtotal * igst) / 100) }}
+                            </td>
+                        </tr>
+                        <tr v-if="cgst!=0||sgst!=0||igst!=0" style="line-height: 2rem; color: #27374d">
+                            <td
+                            
+                                colspan="6"
+                                style="
+                                    text-align: right;
+                                    font-weight: bold;
+                                    padding: 5px;
+                                "
+                            >
+                                GST Total
+                            </td>
+                            <td style="padding: 5px">
+                                {{ formattedAmount((subtotal * (cgst+sgst+igst)) / 100) }}
+                            </td>
+                        </tr>
+                        <tr  v-if="(Math.round(
+                                   (subtotal+((subtotal * (cgst+sgst+igst))/100))) - (subtotal+((subtotal * (cgst+sgst+igst))/100))).toFixed(2)!=0" style="line-height: 2rem; color: #27374d">
+                            <td
+                           
+                                colspan="6"
+                                style="
+                                    text-align: right;
+                                    font-weight: bold;
+                                    padding: 5px;
+                                "
+                            >
+                               Round
+                            </td>
+                            <td style="padding: 5px">
+                                {{
+                              formattedAmount(  
+                               (Math.round(
+                                   (subtotal+((subtotal * (cgst+sgst+igst))/100))) - (subtotal+((subtotal * (cgst+sgst+igst))/100))).toFixed(2))
+                                }}
                             </td>
                         </tr>
                         <tr style="line-height: 2rem; color: #27374d">
@@ -314,8 +377,8 @@ function formatDate(inputDate) {
                             </td>
                             <td style="padding: 5px">
                                 {{
-                                    formattedAmount(
-                                        subtotal + (subtotal * GstPercentage) / 100
+                                    formattedAmount(Math.round(
+                                   (subtotal+((subtotal * (cgst+sgst+igst))/100)))
                                     )
                                 }}
                             </td>
@@ -329,7 +392,7 @@ function formatDate(inputDate) {
                 style="
                     display: flex;
                     background-color: #fff;
-                    padding: 10mm 10mm 0 20mm;
+                    padding: 10mm 10mm 0 10mm;
                 "
             >
                 <!-- Left Half for Declaration -->
@@ -372,6 +435,12 @@ tfoot tr:first-child {
     background-color: #eff0f1;
 }
 tfoot tr:last-child {
+    background-color: #eff0f1;
+}
+tfoot tr:nth-child(4) {
+    background-color: #eff0f1;
+}
+tfoot tr:nth-child(5) {
     background-color: #eff0f1;
 }
 table,

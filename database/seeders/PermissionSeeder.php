@@ -132,8 +132,42 @@ class PermissionSeeder extends Seeder
                 'name' => 'permissions',
                 'action'=>'Force Delete'
             ],
-            
-            // Add more permissions here
+            [
+                'id' => 22,
+                'name' => 'customers',
+                'action'=>'View Any'
+            ],
+            [
+                'id' => 23,
+                'name' => 'customers',
+                'action'=>'View'
+            ],
+            [
+                'id' => 24,
+                'name' => 'customers',
+                'action'=>'Create'
+            ],
+            [
+                'id' => 25,
+                'name' => 'customers',
+                'action'=>'Update'
+            ],
+            [
+                'id' => 26,
+                'name' => 'customers',
+                'action'=>'Delete'
+            ],
+            [
+                'id' => 27,
+                'name' => 'customers',
+                'action'=>'Restore'
+            ],
+            [
+                'id' => 28,
+                'name' => 'customers',
+                'action'=>'Force Delete'
+            ],
+            // Add more customers here
         ];
 
         Permission::insert($permissions);

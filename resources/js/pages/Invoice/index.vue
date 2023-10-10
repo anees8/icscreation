@@ -4,7 +4,7 @@
             ><BCol><h3>CREATE NEW INVOICE</h3></BCol></BRow
         >
         <BRow class="my-2">
-            <BCol cols="3">
+            <BCol cols="4">
                 <BFormGroup>
                     <BFormInput
                         size="md"
@@ -13,7 +13,7 @@
                     ></BFormInput></BFormGroup
             ></BCol>
 
-            <BCol cols="3">
+            <BCol cols="4">
                 <BFormGroup>
                     <BInputGroup size="md" class="mb-2 mr-sm-2 mb-sm-0">
                         <BFormInput
@@ -31,19 +31,8 @@
                     </BInputGroup>
                 </BFormGroup></BCol
             >
-            <BCol cols="3">
-                <BFormGroup>
-                    <BInputGroup size="md" prepend="GST %">
-                        <BFormSelect v-model="GstPercentage">
-                            <option value="12">GST 12%</option>
-                            <option value="18">GST 18%</option>
-                            <option value="24">GST 24%</option>
-                            <option value="28">GST 28%</option>
-                        </BFormSelect>
-                    </BInputGroup>
-                </BFormGroup></BCol
-            >
-            <BCol cols="3">
+          
+            <BCol cols="4">
                 <BFormGroup>
                     <BFormSelect
                         size="md"
@@ -55,8 +44,48 @@
                     </BFormSelect>
                 </BFormGroup></BCol
             >
+
         </BRow>
-        <BRow class="mb-2">
+        <BRow>  <BCol cols="4">
+                <BFormGroup>
+                    <BInputGroup size="md" prepend="CGST %">
+                        <BFormInput
+                        min="0"
+                        max="100"
+                                            v-model="cgst"
+                                            type="number"
+                                            placeholder="CGST"
+                                        ></BFormInput>
+    
+                    </BInputGroup>
+                </BFormGroup></BCol
+            ><BCol cols="4">
+                <BFormGroup>
+                    <BInputGroup size="md" prepend="SGST %">
+                        <BFormInput
+                        min="0"
+                        max="100"
+                                            v-model="sgst"
+                                            type="number"
+                                            placeholder="SGST"
+                                        ></BFormInput>
+                    </BInputGroup>
+                </BFormGroup></BCol
+            >
+            <BCol cols="4">
+                <BFormGroup>
+                    <BInputGroup size="md" prepend="IGST %">
+                        <BFormInput
+                        min="0"
+                        max="100"
+                                            v-model="igst"
+                                            type="number"
+                                            placeholder="IGST"
+                                        ></BFormInput>
+                    </BInputGroup>
+                </BFormGroup></BCol
+            ></BRow>
+        <BRow class="my-2">
             <BCol cols="12">
                 <BCardGroup deck>
                     <BCard>
@@ -68,11 +97,60 @@
                                     hide-footer
                             
                                 >
-                            <BTableSimple  hover
+                                <BRow  class="mb-2">
+                            <BCol cols="4" class="ms-auto">
+                                <BFormGroup>
+                    <BInputGroup size="md" >
+                        <BFormInput
+                            v-model="search"
+                            type="search"
+                           v-on:change="getCustomers"
+                        ></BFormInput>
+                   </BInputGroup>
+                </BFormGroup>
+
+                            </BCol>
+                        </BRow>
+                            <BTable  hover
                             small
                             class="text-center"
                             bordered
-                            responsive></BTableSimple>
+                            :items="customers"
+                            :fields="fields"
+                            responsive>
+                            <template #cell(actions)="data">
+                            <b-button
+                                v-if="checkPermission('customers', 'View')"
+                                size="sm"
+                                class="rounded-circle me-2"
+                               v-on:click="selectCustomer(data.item.id)"
+                                variant="outline-success"
+                            >
+                                <FontAwesomeIcon icon="check" />
+                            </b-button>
+                        </template>
+                        </BTable>
+        <b-row align-h="end" class="mt-2">
+         <b-col xl="1" lg="2" md="2" class="p-2">
+           <b-form-select
+             v-if="rows > 5"
+             v-model="perPage"
+             :options="options"
+             size="md"
+             v-on:change="setPerPage"
+             varient="dark"
+           ></b-form-select>
+         </b-col>
+         <b-col xl="5" lg="6" md="8" class="p-2">
+           <b-pagination
+             v-if="rows / perPage > 1"
+             v-on:click="getCustomers"
+             v-model="currentPage"
+             :total-rows="rows"
+             :per-page="perPage"
+           ></b-pagination>
+         </b-col>
+       </b-row>
                             </BModal>
                         <template #header> Customer Details  - 
                              <span
@@ -117,13 +195,13 @@
                                         <BFormTextarea
                                             v-model="customer.address"
                                             placeholder="Enter Customer Address"
-                                            rows="1"
+                                            rows="2"
                                         ></BFormTextarea> </BInputGroup
                                 ></BFormGroup>
                                 <BFormGroup class="mb-2">
                                     <BInputGroup size="md" prepend="GST #">
                                         <BFormInput
-                                            v-model="customer.gst"
+                                            v-model="customer.gst_number"
                                             type="text"
                                             placeholder="Gst Number"
                                         ></BFormInput>
@@ -177,6 +255,7 @@
                                                 icon="plus" /></BButton
                                     ></BTh>
                                     <BTh width="50%">Product</BTh>
+                                    <BTh>Select Product</BTh>
                                     <BTh>Hsn Code</BTh>
                                     <BTh>Qty</BTh>
                                     <BTh>Price</BTh>
@@ -203,7 +282,14 @@
                                             placeholder="Enter description"
                                             rows="1"
                                         ></BFormTextarea>
+                                        
                                     </BTd>
+                                    <BTd><span size="sm"
+               variant="outline-dark"
+               class="text-primary"
+             >Select </span
+             ></BTd>
+
                                     <BTd
                                         ><BFormInput
                                             size="md"
@@ -273,7 +359,9 @@
             :DeliveryType="DeliveryType"
             :InvoiceDate="InvoiceDate"
             :products="products"
-            :GstPercentage="GstPercentage"
+            :cgst="cgst"
+            :sgst="sgst"
+            :igst="igst"
         />
     </div>
 </template>
@@ -282,6 +370,25 @@
 import { ref, defineAsyncComponent } from "vue";
 import html2pdf from "html2pdf.js";
 
+
+import { storeToRefs } from "pinia";
+import { useCustomersStore } from "@/stores/customers.js";
+import { useLoginStore } from "@/stores/login.js";
+
+const { checkPermission } = useLoginStore();
+const { getCustomers, setPerPage} = useCustomersStore();
+const {
+    customers,
+    options,fields,
+    search,
+    perPage,
+    currentPage, 
+    rows,
+    errors,
+    isBusy
+  } = storeToRefs(useCustomersStore());
+getCustomers();
+
 const InvoiceDesign = defineAsyncComponent(() => import("./invoiceDesign.vue"));
 
 const showInvoice = ref(false);
@@ -289,7 +396,9 @@ const modal=ref(false);
 const InvoiceDate = ref(getCurrentDate());
 const InvoiceNumber = ref("ICS202301001");
 const DeliveryType = ref("office");
-const GstPercentage = ref("12");
+const cgst = ref(6);
+const sgst = ref(6);
+const igst = ref(0);
 const invoiceNumberPrefix = "ICS";
 let incrementingNumber = 1;
 
@@ -323,13 +432,14 @@ function getCurrentDate() {
 }
 
 const customer = ref({
-    name: "Imran",
-    company_name: "XYZ Company",
-    email: "company@mail.com",
-    phone: "9876543210",
-    address: "321 chennai- 635810",
-    gst: "GST123",
+    name:null,
+    company_name:null,
+    email:null,
+    phone:null,
+    address:null,
+    gst_number:null,
 });
+
 const products = ref([
     {
         description: "Widget A",
@@ -414,4 +524,9 @@ const removeProduct = (index) => {
     // Use splice to remove the product at the specified index
     products.value.splice(index, 1);
 };
+const selectCustomer=(id)=>{
+ const selectedCustomer=customers.value.find((customer) => customer.id == id);
+  customer.value=selectedCustomer;
+  modal.value=!modal.value;
+}
 </script>

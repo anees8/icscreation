@@ -30,12 +30,11 @@ class RoleSeeder extends Seeder
         foreach ($roles as $roleData) {
             $role = Role::create($roleData);
             if($role->id==1){
-            $role->permissions()->sync(range(1,21));
+            $role->permissions()->sync(range(1,28));
             }else{
-                $role->permissions()->sync(range(1,7));
+                $role->permissions()->sync(range(1,21));
             }   
         }
-
         
     }
 }
