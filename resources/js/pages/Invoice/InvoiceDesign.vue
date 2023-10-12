@@ -42,7 +42,7 @@ const props =defineProps({
 const subtotal = computed(() => {
     let total = 0;
     for (const product of props.products) {
-        total += product.quantity * product.rate;
+        total += product.quantity * product.price;
     }
     return total;
 });
@@ -227,10 +227,10 @@ function formatDate(inputDate) {
                     <thead>
                         <tr>
                             <th style="padding: 10px">S.No</th>
-                            <th style="padding: 10px">Description of Goods</th>
+                            <th style="padding: 10px">Name of the Goods</th>
                             <th style="padding: 10px">HSN Code</th>
                             <th style="padding: 10px">Quantity</th>
-                            <th style="padding: 10px">Rate</th>
+                            <th style="padding: 10px">Price</th>
                             <th style="padding: 10px">UOM</th>
                             <th style="padding: 10px">Amount</th>
                         </tr>
@@ -243,15 +243,15 @@ function formatDate(inputDate) {
                             :key="index"
                         >
                             <td>{{ index + 1 }}</td>
-                            <td>{{ product.description }}</td>
+                            <td>{{ product.name }}</td>
                             <td>{{ product.hsnCode }}</td>
                             <td>{{ product.quantity }}</td>
-                            <td>{{ formattedAmount(product.rate) }}</td>
+                            <td>{{ formattedAmount(product.price) }}</td>
                             <td>{{ product.uom.toUpperCase() }}</td>
                             <td>
                                 {{
                                     formattedAmount(
-                                        product.quantity * product.rate
+                                        product.quantity * product.price
                                     )
                                 }}
                             </td>

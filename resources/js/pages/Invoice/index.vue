@@ -90,7 +90,7 @@
                 <BCardGroup deck>
                     <BCard>
                         <BModal
-                                    v-model="modal"
+                                    v-model="customersmodal"
                                     title="Choose Customer"
                                     size="lg"
                                     hide-header
@@ -102,9 +102,9 @@
                                 <BFormGroup>
                     <BInputGroup size="md" >
                         <BFormInput
-                            v-model="search"
+                            v-model="customersStore.search"
                             type="search"
-                           v-on:change="getCustomers"
+                           v-on:Input="getCustomers"
                         ></BFormInput>
                    </BInputGroup>
                 </BFormGroup>
@@ -115,8 +115,8 @@
                             small
                             class="text-center"
                             bordered
-                            :items="customers"
-                            :fields="fields"
+                            :items="customersStore.customers"
+                            :fields="customersStore.fields"
                             responsive>
                             <template #cell(actions)="data">
                             <b-button
@@ -133,21 +133,21 @@
         <b-row align-h="end" class="mt-2">
          <b-col xl="1" lg="2" md="2" class="p-2">
            <b-form-select
-             v-if="rows > 5"
-             v-model="perPage"
-             :options="options"
+             v-if="customersStore.rows > 5"
+             v-model="customersStore.search"
+             :options="customersStore.options"
              size="md"
-             v-on:change="setPerPage"
+             v-on:change="customersStore.perPage"
              varient="dark"
            ></b-form-select>
          </b-col>
          <b-col xl="5" lg="6" md="8" class="p-2">
            <b-pagination
-             v-if="rows / perPage > 1"
+             v-if="customersStore.rows / customersStore.perPage > 1"
              v-on:click="getCustomers"
-             v-model="currentPage"
-             :total-rows="rows"
-             :per-page="perPage"
+             v-model="customersStore.currentPage"
+             :total-rows="customersStore.rows"
+             :per-page="customersStore.perPage"
            ></b-pagination>
          </b-col>
        </b-row>
@@ -155,7 +155,7 @@
                         <template #header> Customer Details  - 
                              <span
              size="sm"
-               @click="modal = !modal"
+               @click="customersmodal = !customersmodal"
                variant="outline-dark"
                class="text-primary"
              >Select Customer</span
@@ -254,7 +254,7 @@
                                             ><FontAwesomeIcon
                                                 icon="plus" /></BButton
                                     ></BTh>
-                                    <BTh width="50%">Product</BTh>
+                                    <BTh width="40%">Product</BTh>
                                     <BTh>Select Product</BTh>
                                     <BTh>Hsn Code</BTh>
                                     <BTh>Qty</BTh>
@@ -278,15 +278,84 @@
                                     <BTd>
                                         <BFormTextarea
                                             size="md"
-                                            v-model="product.description"
-                                            placeholder="Enter description"
+                                            v-model="product.name"
+                                            placeholder="Enter name"
                                             rows="1"
                                         ></BFormTextarea>
                                         
                                     </BTd>
-                                    <BTd><span size="sm"
+                                    <BTd> 
+                                        <BModal
+                                    v-model="productsmodal"
+                                    title="Choose Customer"
+                                    size="lg"
+                                    hide-header
+                                    hide-footer
+                            
+                                >
+                                <BRow v-if="errors.error" class="text-danger text-center">{{ errors.error }}</BRow>
+                                <BRow  class="mb-2">
+                               
+                            <BCol cols="4" class="ms-auto">
+                                <BFormGroup>
+                    <BInputGroup size="md" >
+                        <BFormInput
+                            v-model="productsStore.search"
+                            type="search"
+                           v-on:Input="getProducts"
+                        ></BFormInput>
+                   </BInputGroup>
+                </BFormGroup>
+
+                            </BCol>
+                        </BRow>
+                            <BTable  hover
+                            small
+                            class="text-center"
+                            bordered
+                            :items="productsStore.products"
+                            :fields="productsStore.fields"
+                            responsive>
+                            <template #cell(actions)="data">
+                              
+                            <b-button
+                                v-if="checkPermission('products', 'View')"
+                                size="sm"
+                                class="rounded-circle me-2"
+                               v-on:click="selectProduct(data.item.id)"
+                                variant="outline-success"
+                            >
+                                <FontAwesomeIcon icon="check" />
+                            </b-button>
+                        </template>
+                        </BTable>
+        <b-row align-h="end" class="mt-2">
+         <b-col xl="1" lg="2" md="2" class="p-2">
+           <b-form-select
+             v-if="productsStore.rows > 5"
+             v-model="productsStore.currentPage"
+             :options="productsStore.options"
+             size="md"
+             v-on:change="productsStore.perPage"
+             varient="dark"
+           ></b-form-select>
+         </b-col>
+         <b-col xl="5" lg="6" md="8" class="p-2">
+           <b-pagination
+             v-if="productsStore.rows / productsStore.perPage > 1"
+             v-on:click="getProducts"
+             v-model="productsStore.currentPage"
+             :total-rows="productsStore.rows"
+             :per-page="productsStore.perPage"
+           ></b-pagination>
+         </b-col>
+       </b-row>
+                            </BModal>
+                                        
+                                        <span size="sm"
                variant="outline-dark"
                class="text-primary"
+               @click="changeProduct(index)"
              >Select </span
              ></BTd>
 
@@ -308,9 +377,9 @@
                                     <BTd>
                                         <BFormInput
                                             size="md"
-                                            v-model="product.rate"
+                                            v-model="product.price"
                                             type="number"
-                                            placeholder="Enter rate"
+                                            placeholder="Enter price"
                                         ></BFormInput
                                     ></BTd>
                                     <BTd>
@@ -369,30 +438,23 @@
 <script setup>
 import { ref, defineAsyncComponent } from "vue";
 import html2pdf from "html2pdf.js";
-
-
-import { storeToRefs } from "pinia";
 import { useCustomersStore } from "@/stores/customers.js";
+import { useProductsStore } from "@/stores/products.js";
 import { useLoginStore } from "@/stores/login.js";
-
+const InvoiceDesign = defineAsyncComponent(() => import('./invoiceDesign.vue'));
 const { checkPermission } = useLoginStore();
-const { getCustomers, setPerPage} = useCustomersStore();
-const {
-    customers,
-    options,fields,
-    search,
-    perPage,
-    currentPage, 
-    rows,
-    errors,
-    isBusy
-  } = storeToRefs(useCustomersStore());
+const { getCustomers, setPerPage : setCustomerPerPage} = useCustomersStore();
+const { getProducts, setPerPage :setProductsPerPage} = useProductsStore();
+const customersStore = useCustomersStore();
+const productsStore = useProductsStore();
+const productIndex=ref(null);
 getCustomers();
+getProducts();
 
-const InvoiceDesign = defineAsyncComponent(() => import("./invoiceDesign.vue"));
-
+const errors=ref([]);
 const showInvoice = ref(false);
-const modal=ref(false);
+const customersmodal=ref(false);
+const productsmodal=ref(false);
 const InvoiceDate = ref(getCurrentDate());
 const InvoiceNumber = ref("ICS202301001");
 const DeliveryType = ref("office");
@@ -442,20 +504,12 @@ const customer = ref({
 
 const products = ref([
     {
-        description: "Widget A",
-        hsnCode: "123456",
-        quantity: 100,
-        rate: 5,
-        uom: "PCS",
+        name: "",
+        hsnCode: null,
+        quantity: null,
+        price: null,
+        uom: "",
     },
-    {
-        description: "Widget B",
-        hsnCode: "789012",
-        quantity: 50,
-        rate: 8,
-        uom: "PCS",
-    },
-    // Add more data objects as needed
 ]);
 
 const downloadInvoice = async () => {
@@ -512,7 +566,7 @@ const generatePDF = async () => {
 const addProduct = () => {
     // Add a new product object to the products array
     products.value.push({
-        description: "",
+        name: "",
         hsnCode: "",
         quantity: 0,
         rate: 0,
@@ -525,8 +579,23 @@ const removeProduct = (index) => {
     products.value.splice(index, 1);
 };
 const selectCustomer=(id)=>{
- const selectedCustomer=customers.value.find((customer) => customer.id == id);
+ const selectedCustomer=customersStore.customers.find((customer) => customer.id == id);
   customer.value=selectedCustomer;
-  modal.value=!modal.value;
+  customersmodal.value=!customersmodal.value;
+}
+const changeProduct=(index)=>{
+    productIndex.value=index;
+    productsmodal.value=!productsmodal.value;
+}
+const selectProduct=(id)=>{
+const selectedProduct=productsStore.products.find((product) => product.id == id);
+const productExists = products.value.find((product )=> product.id === id);
+if(!productExists){
+  products.value.splice(productIndex.value,1,selectedProduct);
+  productsmodal.value=!productsmodal.value;
+}else{
+    errors.value.error="You have already Selected this Product";
+
+}
 }
 </script>

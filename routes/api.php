@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{AuthController,PermissionsController,RolesController,UserController,CustomerController};
+use App\Http\Controllers\{AuthController,PermissionsController,RolesController,UserController,CustomerController,ProductController};
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +38,9 @@ Route::middleware('auth:api')->group(function () {
         'users' => UserController::class,
         'permissions' => PermissionsController::class,
         'customers' =>  CustomerController::class,
+        'products' =>  ProductController::class,
     ]);
+
 
 });
 
